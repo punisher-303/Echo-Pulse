@@ -38,7 +38,7 @@ jobs:
               run: cd ECHOPULS && flutter build apk --release --build-number ${{github.run_number}}
 
             - name: Rename APK file
-              run: Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v1.0.0+${{github.run_number}}.apk"
+              run: Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v1.5.0+${{github.run_number}}.apk"
            
             - name: Build Windows App
               run: cd ECHOPULS && flutter build windows --release --build-number ${{github.run_number}}
@@ -47,21 +47,21 @@ jobs:
               run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/bloomee.exe" -NewName "EchoPulse.exe"
            
             - name: ZIP build
-              run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v1.0.0+${{github.run_number}}.zip
+              run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v1.5.0+${{github.run_number}}.zip
             
             - name: Upload Artifacts
               uses: actions/upload-artifact@v2
               with:
                 name: Release
                 path: |
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v1.0.0+${{github.run_number}}.apk
-                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v1.0.0+${{github.run_number}}.zip
+                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v1.5.0+${{github.run_number}}.apk
+                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v1.5.0+${{github.run_number}}.zip
             - name: Create Release
               uses: ncipollo/release-action@v1
               with:
                 artifacts: |
-                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v1.0.0+${{github.run_number}}.zip
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v1.0.0+${{github.run_number}}.apk
+                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v1.5.0+${{github.run_number}}.zip
+                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v1.5.0+${{github.run_number}}.apk
                 tag: v1.0.0+${{github.run_number}}
                 token: ${{secrets.SECRET_KEY}}
 
