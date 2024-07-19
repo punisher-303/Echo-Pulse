@@ -62,7 +62,7 @@ jobs:
                 artifacts: |
                   ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v1.5.0+${{github.run_number}}.zip
                   ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v1.5.0+${{github.run_number}}.apk
-                tag: v1.0.0+${{github.run_number}}
+                tag: v1.5.0+${{github.run_number}}
                 token: ${{secrets.SECRET_KEY}}
 
     
