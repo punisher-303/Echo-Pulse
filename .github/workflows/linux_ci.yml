@@ -34,10 +34,10 @@ jobs:
       - name: Zip Linux App
         run: |
           cd build/linux/x64/release/bundle
-          zip -r echo_pulse_linux_v2.6.5_dev+${{github.run_number}}.zip .
+          zip -r echo_pulse_linux_v2.7.0_dev+${{github.run_number}}.zip .
 
       - name: Upload Linux App
         uses: actions/upload-artifact@v2
         with:
           name: echo_pulse_linux_dev
-          path: echo_pulse_linux_v2.6.5_dev+${{github.run_number}}.zip
+          path: echo_pulse_linux_v2.7.0_dev+${{github.run_number}}.zip
