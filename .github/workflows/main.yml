@@ -39,8 +39,7 @@ jobs:
                   $b64 = "${{ secrets.KEY_STORE }}"
                   $filename = "./ECHOPULS/android/Echopulse.jks"
                   $bytes = [Convert]::FromBase64String($b64)
-                  [IO.File]::WriteAllBytes($filename, $bytes)
-                  
+                  [IO.File]::WriteAllBytes($filename, $bytes)     
               # run: echo "${{ secrets.KEY_STORE }}" | base64 --decode > ./android/Echopulse.jks
 
             - name: Create Keystore properties

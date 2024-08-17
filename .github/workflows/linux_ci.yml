@@ -41,3 +41,4 @@ jobs:
         with:
           name: echo_pulse_linux_dev
           path:  ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v2.7.5_dev+${{github.run_number}}.zip
+          
