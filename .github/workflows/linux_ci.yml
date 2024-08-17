@@ -36,7 +36,6 @@ jobs:
           cd build/linux/x64/release/bundle
           zip -r echo_pulse_linux_v2.7.5_dev+${{github.run_number}}.zip .
 
-
       - name: Upload Linux App
         uses: actions/upload-artifact@v2
         with:
