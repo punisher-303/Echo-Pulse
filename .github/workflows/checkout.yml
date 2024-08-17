@@ -4,7 +4,6 @@ name: "Build & Check"
 on:
   push:
     paths-ignore:
-      - 'README.md'
       - 'LICENSE'
       - 'CHANGELOG.md'
       - 'CONTRIBUTING.md'
