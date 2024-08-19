@@ -15,7 +15,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.22.3'
           channel: stable
       - run: |
           sudo apt-get update -y
@@ -38,10 +38,9 @@ jobs:
         run: |
           cd ECHOPULS/build/linux/x64/release/bundle
           zip -r echo_pulse_linux_v2.7.5_dev+${{github.run_number}}.zip .
-
+        
       - name: Upload Linux App
         uses: actions/upload-artifact@v2
         with:
-          name: Release
-          path:  ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v2.7.5_dev+${{github.run_number}}.zip
-          
+          name: echo_pulse_linux_dev
+          path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v2.7.5_dev+${{github.run_number}}.zip
