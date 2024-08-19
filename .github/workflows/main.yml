@@ -97,7 +97,8 @@ jobs:
                   ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v2.7.5+${{github.run_number}}_x86.apk
                   ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v2.7.5+${{github.run_number}}_armeabi-v7a.apk
                   ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v2.7.5+${{github.run_number}}_arm64-v8a.apk
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v2.7.5+${{github.run_number}}_x86_64.apk               
+                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v2.7.5+${{github.run_number}}_x86_64.apk
+                                 
                 tag: v2.7.5+${{github.run_number}}
                 token: ${{secrets.SECRET_KEY}}
                 prerelease: true
