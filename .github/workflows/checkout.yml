@@ -2,7 +2,7 @@ name: "Build & Check"
 
 
 on:
-  push:
+  workflow_dispatch:
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
