@@ -37,15 +37,15 @@ jobs:
       - name: Zip Linux App
         run: |
           cd ECHOPULS/build/linux/x64/release/bundle
-          zip -r echo_pulse_linux_v2.7.5_dev+${{github.run_number}}.zip .
+          zip -r echo_pulse_linux_v3.0.0_dev+${{github.run_number}}.zip .
         
 
 
       - name: Upload Linux App
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: echo_pulse_linux_dev
-          path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v2.7.5_dev+${{github.run_number}}.zip
+          path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v3.0.0_dev+${{github.run_number}}.zip
 
      
     
