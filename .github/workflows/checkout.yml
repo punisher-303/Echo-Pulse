@@ -47,7 +47,7 @@ jobs:
 
 
             - name: Rename APK file
-              run: Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v4.0.0+${{github.run_number}}.apk"
+              run: Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v4.5.0+${{github.run_number}}.apk"
 
             - name: Build Windows App
               run: flutter build windows --release --build-number ${{github.run_number}}
@@ -56,15 +56,15 @@ jobs:
               run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/bloomee.exe" -NewName "Bloomee.exe"
            
             - name: ZIP build
-              run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v4.0.0+${{github.run_number}}.zip
+              run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v4.5.0+${{github.run_number}}.zip
             
             - name: Upload Artifacts
               uses: actions/upload-artifact@v4
               with:
                 name: Release
                 path: |
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v4.0.0+${{github.run_number}}.apk
-                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v4.0.0+${{github.run_number}}.zip
+                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v4.5.0+${{github.run_number}}.apk
+                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v4.5.0+${{github.run_number}}.zip
 
 
     
