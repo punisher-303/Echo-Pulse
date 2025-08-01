@@ -101,4 +101,6 @@ jobs:
                                  
                 tag: v4.5.1+${{github.run_number}}
                 token: ${{secrets.SECRET_KEY}}
+                allowUpdates: true
+                omitBody: true
                 prerelease: true
