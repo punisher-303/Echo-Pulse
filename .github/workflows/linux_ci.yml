@@ -52,10 +52,8 @@ jobs:
         with:
           artifacts: |
             ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v4.5.2_dev+${{github.run_number}}.zip
-          tag: v4.5.2+57
+          tag: v4.5.2+58
           token: ${{secrets.SECRET_KEY}}
           allowUpdates: true
           omitBody: true
           prerelease: true
-     
-    
