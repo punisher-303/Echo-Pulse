@@ -3,22 +3,18 @@
 <section class="about-developer">
   <h2>Who Am I?</h2>
   <p class="about-subtitle">
-    Hi, I’m Hemant. I build open-source projects like BloomeeTunes out of a genuine love for software development. This app started as a personal experiment and grew into something much bigger—used and appreciated by people around the world. I’m always exploring new ideas, and I believe in sharing what I create freely, so others can learn, build, and enjoy too.
+    Hi, I’m Anand. I build open-source projects like EchoPulse out of a genuine love for software development. This app started as a personal experiment and grew into something much bigger—used and appreciated by people around the world. I’m always exploring new ideas, and I believe in sharing what I create freely, so others can learn, build, and enjoy too.
   </p>
   <div class="contact-buttons">
-  <a href="mailto:iamhemantindia@protonmail.com" class="contact-btn email" aria-label="Email Hemant" title="Email Hemant">
+  <a href="anandpm224@gmail.com" class="contact-btn email" aria-label="Email Anand" title="Email Anand">
       <i class="fa-solid fa-envelope"></i>
       Email Me
     </a>
-  <a href="https://instagram.com/iamhemantindia" class="contact-btn instagram" target="_blank" rel="noopener noreferrer" aria-label="Hemant on Instagram" title="Instagram - iamhemantindia">
+  <a href="https://instagram.com/appuz.404" class="contact-btn instagram" target="_blank" rel="noopener noreferrer" aria-label="Anand on Instagram" title="Instagram - AnandPM">
       <i class="fa-brands fa-instagram"></i>
       Instagram
     </a>
-  <a href="https://linkedin.com/in/iamhemantindia" class="contact-btn linkedin" target="_blank" rel="noopener noreferrer" aria-label="Hemant on LinkedIn" title="LinkedIn - iamhemantindia">
-      <i class="fa-brands fa-linkedin"></i>
-      LinkedIn
-    </a>
-  <a href="https://github.com/HemantKArya" class="contact-btn github" target="_blank" rel="noopener noreferrer" aria-label="Hemant on GitHub" title="GitHub - HemantKArya">
+  <a href="https://github.com/punisher-303" class="contact-btn github" target="_blank" rel="noopener noreferrer" aria-label="Anand on GitHub" title="GitHub - AnandPM">
       <i class="fa-brands fa-github"></i>
       GitHub
     </a>

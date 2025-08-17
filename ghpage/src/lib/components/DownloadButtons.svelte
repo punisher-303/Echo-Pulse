@@ -5,8 +5,8 @@
 		{ platform: 'linux', icon: 'fa-brands fa-linux', name: 'Linux',}
 	];
 
-	const githubReleaseLink = "https://github.com/HemantKArya/BloomeeTunes/releases";
-	const sourceforgeLink = "https://bloomee.sourceforge.io/";
+	const githubReleaseLink = "https://github.com/punisher-303/Echo-Pulse/releases";
+	const sourceforgeLink = "https://echo-pulse.sourceforge.io/";
 
 	function openSourceForge() {
 		window.open(sourceforgeLink, '_blank');
@@ -33,7 +33,7 @@
 				<small>Latest built releases</small>
 			</div>
 		</a>
-		<a href="https://sourceforge.net/projects/bloomee/files/latest/download" class="custom-btn" target="_blank" rel="noopener noreferrer">
+		<a href="https://sourceforge.net/projects/echo-pulse/files/latest/download" class="custom-btn" target="_blank" rel="noopener noreferrer">
 			<img src="https://a.fsdn.com/con/img/sandiego/svg/originals/sf-icon-orange-no_sf.svg" alt="SourceForge Logo" class="sourceforge-icon">
 			<div class="button-info">
 				<span>Download Now</span>

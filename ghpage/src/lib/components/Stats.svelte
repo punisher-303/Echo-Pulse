@@ -8,7 +8,7 @@
 	}
 	
 	function handleGithubClick() {
-		window.open('https://github.com/HemantKArya/BloomeeTunes', '_blank');
+		window.open('https://github.com/punisher-303/Echo-Pulse', '_blank');
 	}
 </script>
 

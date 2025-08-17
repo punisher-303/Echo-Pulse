@@ -1,6 +1,6 @@
-# BloomeeTunes Github Page
+# Echo Pulse Github Page
 
-A small, fast Svelte site used to host BloomeeTunes on GitHub Pages. This file shows just what you need to run, build, and deploy.
+A small, fast Svelte site used to host EchoPulse on GitHub Pages. This file shows just what you need to run, build, and deploy.
 
 ---
 

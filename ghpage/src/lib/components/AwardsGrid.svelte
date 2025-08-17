@@ -1,7 +1,7 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
 
-	const projectUrl = 'https://sourceforge.net/projects/bloomee/';
+	const projectUrl = 'https://sourceforge.net/projects/echo-pulse/';
 	const sfId = '3775631';
 
 	const badges = [
@@ -88,7 +88,7 @@
 						data-metadata={b.metadata}
 						style="width: 130px;"
 					>
-						<a href={projectUrl} target="_blank" rel="noopener noreferrer">BloomeeTunes</a>
+						<a href={projectUrl} target="_blank" rel="noopener noreferrer">EchoPulse</a>
 					</div>
 				</div>
 			{/each}

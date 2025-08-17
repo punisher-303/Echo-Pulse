@@ -11,7 +11,7 @@ const config = {
     }),
     // Use base only in production (GitHub Pages), not during local dev
     paths: {
-      base: dev ? '' : '/BloomeeTunes',
+      base: dev ? '' : '/Echo-Pulse',
     },
     prerender: {
       entries: ['*'], // prerender all routes
