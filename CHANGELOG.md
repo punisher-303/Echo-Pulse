@@ -1,3 +1,15 @@
+## [4.5.5] - 2025-08-18
+
+### Changed
+- **Playlist Songs**: The imported playlist songs listed by date modified like Latest added song on first and old one is last.
+- **Contact Info**: Email to contact is added and fixed.
+
+### Fixed
+- Playlist Sorting.
+- Contact info fixed.
+- Updated By Anand PM.
+
+
 ## [4.5.4] - 2025-08-17
 
 ### Added
