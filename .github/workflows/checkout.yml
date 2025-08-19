@@ -39,8 +39,13 @@ jobs:
             - name: Install Dependencies
               run: cd ECHOPULS && flutter pub get
             
-            - name: Create .env file
-              run: echo "CLIENT_ID = XXXXX\nCLIENT_SECRET = XXXX EOF" > ECHOPULS/assets/.env
+            - name: Extract version from pubspec.yaml
+              shell: powershell
+              run: |
+                  $vLine = Select-String -Path pubspec.yaml -Pattern '^version:\s*(\S+)' | Select-Object -First 1
+                  if (-not $vLine) { Write-Error 'version not found in pubspec.yaml'; exit 1 }
+                  $ver = $vLine.Matches[0].Groups[1].Value.Split('+')[0]
+                  echo "VERSION=$ver" >> $env:GITHUB_ENV
 
             
             - name: Build App files
@@ -48,7 +53,7 @@ jobs:
 
 
             - name: Rename APK file
-              run: Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v4.5.5+${{github.run_number}}.apk"
+              run: Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}.apk"
 
             - name: Build Windows App
               run: flutter build windows --release --build-number ${{github.run_number}}
@@ -57,15 +62,15 @@ jobs:
               run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/bloomee.exe" -NewName "Bloomee.exe"
            
             - name: ZIP build
-              run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v4.5.5+${{github.run_number}}.zip
+              run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v$env:VERSION+${{github.run_number}}.zip
             
             - name: Upload Artifacts
               uses: actions/upload-artifact@v4
               with:
                 name: Release
                 path: |
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v4.5.5+${{github.run_number}}.apk
-                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v4.5.5+${{github.run_number}}.zip
+                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}.apk
+                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v$env:VERSION+${{github.run_number}}.zip
 
 
     
