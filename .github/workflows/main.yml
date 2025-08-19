@@ -3,125 +3,123 @@ name: "Build & Release"
 on:
   workflow_dispatch:
     branches: main
-    
 
 jobs:
-    build-windows:
-        name: Build & Release
-        runs-on: windows-latest
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v4
+  build-windows:
+    name: Build & Release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-            - name: Setup-Java
-              uses: actions/setup-java@v3.12.0
-              with:
-                distribution: 'oracle'
-                java-version: '17'
+      - name: Setup-Java
+        uses: actions/setup-java@v3.12.0
+        with:
+          distribution: 'oracle'
+          java-version: '17'
 
-            - name: Setup Flutter
-              uses: subosito/flutter-action@v2
-              with:
-                flutter-version: '3.27.4'
-                channel: 'stable'
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+          channel: 'stable'
 
-            - name: Clone Repository
-              run: git clone https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
-            
-            - name: Install Dependencies
-              run: cd ECHOPULS && flutter pub get
-            
-            - name: Extract version from pubspec.yaml
-              shell: powershell
-              run: |
-                  $vLine = Select-String -Path ECHOPULS\pubspec.yaml -Pattern '^version:\s*(\S+)' | Select-Object -First 1
-                  if (-not $vLine) { Write-Error 'version not found in pubspec.yaml'; exit 1 }
-                  $ver = $vLine.Matches[0].Groups[1].Value.Split('+')[0]
-                  echo "VERSION=$ver" >> $env:GITHUB_ENV
+      - name: Clone Repository
+        run: git clone https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
 
-            - name: Create keystore file
-              run: |
-                  $b64 = "${{ secrets.KEY_STORE }}"
-                  $filename = "./ECHOPULS/android/Echopulse.jks"
-                  $bytes = [Convert]::FromBase64String($b64)
-                  [IO.File]::WriteAllBytes($filename, $bytes)     
-              # run: echo "${{ secrets.KEY_STORE }}" | base64 --decode > ./ECHOPULS/android/Echopulse.jks
+      - name: Install Dependencies
+        run: cd ECHOPULS && flutter pub get
 
-            - name: Create Keystore properties
-              run: |
-                  echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ./ECHOPULS/android/key.properties
-                  echo storePassword=\${{ secrets.STORE_PASSWORD }} >> ./ECHOPULS/android/key.properties
-                  echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ./ECHOPULS/android/key.properties
+      - name: Extract version from pubspec.yaml
+        shell: powershell
+        run: |
+          $vLine = Select-String -Path ECHOPULS\pubspec.yaml -Pattern '^version:\s*(\S+)' | Select-Object -First 1
+          if (-not $vLine) { Write-Error 'version not found in pubspec.yaml'; exit 1 }
+          $ver = $vLine.Matches[0].Groups[1].Value.Split('+')[0]
+          echo "VERSION=$ver" >> $env:GITHUB_ENV
 
-            - name: Build App files
-              run: cd ECHOPULS && flutter build apk --release --split-per-abi --build-number ${{github.run_number}}
+      - name: Create keystore file
+        run: |
+          $b64 = "${{ secrets.KEY_STORE }}"
+          $filename = "./ECHOPULS/android/Echopulse.jks"
+          $bytes = [Convert]::FromBase64String($b64)
+          [IO.File]::WriteAllBytes($filename, $bytes)     
 
-            - name: Verify Sign
-              run: |
-                  jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-release.apk
-                  jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-x86-release.apk
-                  jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-                  jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
-                  jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk
+      - name: Create Keystore properties
+        run: |
+          echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ./ECHOPULS/android/key.properties
+          echo storePassword=\${{ secrets.STORE_PASSWORD }} >> ./ECHOPULS/android/key.properties
+          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ./ECHOPULS/android/key.properties
 
-            - name: Rename APK file
-              run: |
-                  Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_universal.apk"
-                  Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86.apk"
-                  Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_armeabi-v7a.apk"
-                  Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_arm64-v8a.apk"
-                  Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86_64.apk"
-           
-            - name: Build Windows App
-              run: cd ECHOPULS && flutter build windows --release --build-number ${{github.run_number}}
+      - name: Build App files
+        run: cd ECHOPULS && flutter build apk --release --split-per-abi --build-number ${{github.run_number}}
 
-            - name: Rename file
-              run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/EchoPulse.exe" -NewName "echopulse.exe"
-           
-            - name: ZIP build
-              run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v$env:VERSION+${{github.run_number}}.zip
-            
-            - name: Upload Artifacts
-              uses: actions/upload-artifact@v4
-              with:
-                name: Release
-                path: |
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_universal.apk
-                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v$env:VERSION+${{github.run_number}}.zip
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86.apk
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_armeabi-v7a.apk
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_arm64-v8a.apk
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86_64.apk
+      - name: Verify Sign
+        run: |
+          jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-release.apk
+          jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-x86-release.apk
+          jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+          jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+          jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk
 
-            - name: Create Release
-              uses: ncipollo/release-action@v1
-              with:
-                artifacts: |
-                  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v$env:VERSION+${{github.run_number}}.zip
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_universal.apk
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86.apk
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_armeabi-v7a.apk
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_arm64-v8a.apk
-                  ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86_64.apk
-                                 
-                tag: v$env:VERSION+${{github.run_number}}
-                token: ${{secrets.SECRET_KEY}}
-                allowUpdates: true
-                omitBody: true
-                prerelease: true
+      - name: Rename APK file
+        run: |
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_universal.apk"
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86.apk"
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_armeabi-v7a.apk"
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_arm64-v8a.apk"
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk" -NewName "echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86_64.apk"
 
-    linux_build:
+      - name: Build Windows App
+        run: cd ECHOPULS && flutter build windows --release --build-number ${{github.run_number}}
+
+      - name: Rename file
+        run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/EchoPulse.exe" -NewName "echopulse.exe"
+
+      - name: ZIP build
+        run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v$env:VERSION+${{github.run_number}}.zip
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Release
+          path: |
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_universal.apk
+            ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v$env:VERSION+${{github.run_number}}.zip
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_armeabi-v7a.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_arm64-v8a.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86_64.apk
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: |
+            ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v$env:VERSION+${{github.run_number}}.zip
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_universal.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_armeabi-v7a.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_arm64-v8a.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v$env:VERSION+${{github.run_number}}_x86_64.apk
+          tag: v$env:VERSION+${{github.run_number}}
+          token: ${{secrets.SECRET_KEY}}
+          allowUpdates: true
+          omitBody: true
+          prerelease: true
+
+  linux_build:
     name: Linux Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.27.4'
           channel: stable
+
       - run: |
           sudo apt-get update -y
           sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
@@ -129,23 +127,21 @@ jobs:
 
       - name: Clone Repository
         run: git clone https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
-              
+
       - name: Install Dependencies
         run: cd ECHOPULS && flutter pub get
-            
+
       - name: Extract version from pubspec.yaml
         run: |
           ver=$(grep -m1 -E '^version:\s*' ECHOPULS/pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
           if [ -z "$ver" ]; then echo "version not found in pubspec.yaml"; exit 1; fi
           echo "VERSION=$ver" >> $GITHUB_ENV
-            
+
       - name: Create .env file
         run: echo "CLIENT_ID = XXXXX\nCLIENT_SECRET = XXXX EOF" > ECHOPULS/assets/.env
 
       - name: Build Linux App
-        # compute adjusted build number so linux matches other platforms
         run: |
-          # add 121 to the GitHub run number so build numbers align with Android/Windows
           adjusted=$(( ${{ github.run_number }} + 121 ))
           echo "ADJUSTED_RUN_NUMBER=$adjusted" >> $GITHUB_ENV
           cd ECHOPULS && flutter build linux --release --build-number $adjusted
@@ -154,7 +150,6 @@ jobs:
         run: |
           cd ECHOPULS/build/linux/x64/release/bundle
           zip -r echo_pulse_linux_v${{ env.VERSION }}+${{ env.ADJUSTED_RUN_NUMBER }}.zip .
-        
 
       - name: Upload Artifacts Linux App
         uses: actions/upload-artifact@v4
