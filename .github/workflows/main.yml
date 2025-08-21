@@ -106,7 +106,8 @@ jobs:
           allowUpdates: true
           omitBody: true
           prerelease: true
-  jobs:
+
+jobs:
   linux_build:
     name: Linux Build
     runs-on: ubuntu-latest
