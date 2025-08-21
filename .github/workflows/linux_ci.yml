@@ -53,3 +53,14 @@ jobs:
         with:
           name: echo_pulse_linux
           path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{ env.ADJUSTED_RUN_NUMBER }}.zip
+      
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: |
+            ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{ env.ADJUSTED_RUN_NUMBER }}.zip
+          tag: v${{ env.VERSION }}+${{github.run_number}}
+          token: ${{secrets.SECRET_KEY}}
+          allowUpdates: true
+          omitBody: true
+          prerelease: true    
