@@ -107,7 +107,6 @@ jobs:
           omitBody: true
           prerelease: true
 
-jobs:
   linux_build:
     name: Linux Build
     runs-on: ubuntu-latest
