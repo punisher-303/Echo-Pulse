@@ -113,11 +113,13 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.27.4'
           channel: stable
+
       - run: |
           sudo apt-get update -y
           sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
@@ -154,7 +156,7 @@ jobs:
         with:
           name: echo_pulse_linux
           path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{ env.ADJUSTED_RUN_NUMBER }}.zip
-      
+
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
