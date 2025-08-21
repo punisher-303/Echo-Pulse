@@ -73,6 +73,9 @@ jobs:
       - name: Build Windows App
         run: cd ECHOPULS && flutter build windows --release --build-number ${{github.run_number}}
 
+      - name: Create build-number.txt file
+        run: cd ECHOPULS && echo ${{github.run_number}} > build-number.txt
+
       - name: Rename file
         run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/EchoPulse.exe" -NewName "echopulse.exe"
 
