@@ -1,3 +1,14 @@
+## [4.5.6] - 2025-08-21
+
+### Changed
+- **Discord RichPresence**: Added Discord RichPresence & Updated Some designs.
+- **Windows Notification Controll**: Added Windows Notification Wedgets Controll Systems.
+
+### Fixed
+- Minor Bugs.
+- Realtime Wedgets.
+- Updated By Anand PM.
+
 ## [4.5.5] - 2025-08-18
 
 ### Changed
