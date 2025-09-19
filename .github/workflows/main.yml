@@ -39,7 +39,7 @@ jobs:
           echo "VERSION=$ver" >> $env:GITHUB_ENV
 
       - name: Set build number
-        run: echo "env.build.number=2092" >> $GITHUB_ENV
+        run: echo "build.number=2092" >> $GITHUB_ENV
 
       - name: Create keystore file
         run: |
@@ -141,7 +141,7 @@ jobs:
           echo "VERSION=$ver" >> $GITHUB_ENV
       
       - name: Set build number
-        run: echo "env.build.number=2092" >> $GITHUB_ENV
+        run: echo "build.number=2092" >> $GITHUB_ENV
 
       - name: Build Linux App
         run: cd ECHOPULS && flutter build linux --release --build-number ${{env.build.number}}
