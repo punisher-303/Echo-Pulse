@@ -39,7 +39,7 @@ jobs:
           echo "VERSION=$ver" >> $env:GITHUB_ENV
 
       - name: Set build number
-        run: echo "BUILD_NUMBER=2092" >> $GITHUB_ENV
+        run: echo "build.number=2092" >> $GITHUB_ENV
 
       - name: Create keystore file
         run: |
@@ -55,7 +55,7 @@ jobs:
           echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ./ECHOPULS/android/key.properties
 
       - name: Build Android APKs
-        run: cd ECHOPULS && flutter build apk --release --split-per-abi --build-number ${{BUILD_NUMBER}}
+        run: cd ECHOPULS && flutter build apk --release --split-per-abi --build-number ${{build.number}}
 
       - name: Verify Sign
         run: |
@@ -67,44 +67,44 @@ jobs:
 
       - name: Rename Android APKs
         run: |
-          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_universal.apk"
-          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_x86.apk"
-          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_armeabi-v7a.apk"
-          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_arm64-v8a.apk"
-          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_x86_64.apk"
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_universal.apk"
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_x86.apk"
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_armeabi-v7a.apk"
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_arm64-v8a.apk"
+          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_x86_64.apk"
 
       - name: Build Windows App
-        run: cd ECHOPULS && flutter build windows --release --build-number ${{BUILD_NUMBER}}
+        run: cd ECHOPULS && flutter build windows --release --build-number ${{build.number}}
 
       - name: Rename Windows binary
         run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/EchoPulse.exe" -NewName "echopulse.exe"
 
       - name: ZIP Windows build
-        run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{BUILD_NUMBER}}.zip
+        run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{build.number}}.zip
 
       - name: Upload Artifacts (Windows+Android)
         uses: actions/upload-artifact@v4
         with:
           name: Release
           path: |
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_universal.apk
-            ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{BUILD_NUMBER}}.zip
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_x86.apk
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_armeabi-v7a.apk
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_arm64-v8a.apk
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_x86_64.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_universal.apk
+            ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{build.number}}.zip
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_x86.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_armeabi-v7a.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_arm64-v8a.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_x86_64.apk
 
       - name: Create Release (Windows+Android)
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{BUILD_NUMBER}}.zip
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_universal.apk
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_x86.apk
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_armeabi-v7a.apk
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_arm64-v8a.apk
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{BUILD_NUMBER}}_x86_64.apk
-          tag: v${{ env.VERSION }}+${{BUILD_NUMBER}}
+            ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{build.number}}.zip
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_universal.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_x86.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_armeabi-v7a.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_arm64-v8a.apk
+            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{build.number}}_x86_64.apk
+          tag: v${{ env.VERSION }}+${{build.number}}
           token: ${{secrets.SECRET_KEY}}
           allowUpdates: true
           omitBody: true
@@ -141,28 +141,28 @@ jobs:
           echo "VERSION=$ver" >> $GITHUB_ENV
       
       - name: Set build number
-        run: echo "BUILD_NUMBER=2092" >> $GITHUB_ENV
+        run: echo "build.number=2092" >> $GITHUB_ENV
 
       - name: Build Linux App
-        run: cd ECHOPULS && flutter build linux --release --build-number ${{BUILD_NUMBER}}
+        run: cd ECHOPULS && flutter build linux --release --build-number ${{build.number}}
 
       - name: Zip Linux App
         run: |
           cd ECHOPULS/build/linux/x64/release/bundle
-          zip -r echo_pulse_linux_v${{ env.VERSION }}+${{BUILD_NUMBER}}.zip .
+          zip -r echo_pulse_linux_v${{ env.VERSION }}+${{build.number}}.zip .
 
       - name: Upload Artifacts (Linux)
         uses: actions/upload-artifact@v4
         with:
           name: echo_pulse_linux
-          path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{BUILD_NUMBER}}.zip
+          path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{build.number}}.zip
 
       - name: Create Release (Linux)
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{BUILD_NUMBER}}.zip
-          tag: v${{ env.VERSION }}+${{BUILD_NUMBER}}
+            ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{build.number}}.zip
+          tag: v${{ env.VERSION }}+${{build.number}}
           token: ${{secrets.SECRET_KEY}}
           allowUpdates: true
           omitBody: true
