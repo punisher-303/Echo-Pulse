@@ -1,3 +1,16 @@
+## [4.5.7] - 2025-09-20
+
+### Changed
+- **Bulck Download Added**: Added You can download more song at a time.
+- **showPlayNext**: implt. showPlayNext btn bools for disabling them sometimes.
+- **showAddtoQueue**: implt. showAddtoQueue btn bools for disabling them sometimes.
+
+### Fixed
+- QueueTitle override fix to broadcast the updated queue title.
+- Show song options in upnext panel.
+- Volume sliding on cover fix for manual control.
+- Updated By Anand PM.
+
 ## [4.5.6] - 2025-08-21
 
 ### Changed
