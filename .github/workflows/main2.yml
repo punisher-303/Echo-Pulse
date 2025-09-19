@@ -1,12 +1,12 @@
-name: "Build & Release"
+name: "Build & Release beta"
 
 on:
   workflow_dispatch:
     branches: main
 
 jobs:
-  build-windows:
-    name: Build & Release
+  build:
+    name: Windows + Android Build
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
@@ -51,7 +51,7 @@ jobs:
           echo storePassword=\${{ secrets.STORE_PASSWORD }} >> ./ECHOPULS/android/key.properties
           echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ./ECHOPULS/android/key.properties
 
-      - name: Build App files
+      - name: Build Android APKs
         run: cd ECHOPULS && flutter build apk --release --split-per-abi --build-number ${{github.run_number}}
 
       - name: Verify Sign
@@ -62,7 +62,7 @@ jobs:
           jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
           jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk
 
-      - name: Rename APK file
+      - name: Rename Android APKs
         run: |
           Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{github.run_number}}_universal.apk"
           Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{github.run_number}}_x86.apk"
@@ -73,13 +73,13 @@ jobs:
       - name: Build Windows App
         run: cd ECHOPULS && flutter build windows --release --build-number ${{github.run_number}}
 
-      - name: Rename file
+      - name: Rename Windows binary
         run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/EchoPulse.exe" -NewName "echopulse.exe"
 
-      - name: ZIP build
+      - name: ZIP Windows build
         run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{github.run_number}}.zip
 
-      - name: Upload Artifacts
+      - name: Upload Artifacts (Windows+Android)
         uses: actions/upload-artifact@v4
         with:
           name: Release
@@ -91,7 +91,7 @@ jobs:
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{github.run_number}}_arm64-v8a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{github.run_number}}_x86_64.apk
 
-      - name: Create Release
+      - name: Create Release (Windows+Android)
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
@@ -111,7 +111,7 @@ jobs:
     name: Linux Build
     runs-on: ubuntu-latest
     steps:
-      - name: Clone repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Flutter
@@ -137,31 +137,25 @@ jobs:
           if [ -z "$ver" ]; then echo "version not found in pubspec.yaml"; exit 1; fi
           echo "VERSION=$ver" >> $GITHUB_ENV
 
-      - name: Create .env file
-        run: echo "CLIENT_ID = XXXXX\nCLIENT_SECRET = XXXX EOF" > ECHOPULS/assets/.env
-
       - name: Build Linux App
-        run: |
-          adjusted=$(( ${{ github.run_number }} + 121 ))
-          echo "ADJUSTED_RUN_NUMBER=$adjusted" >> $GITHUB_ENV
-          cd ECHOPULS && flutter build linux --release --build-number $adjusted
+        run: cd ECHOPULS && flutter build linux --release --build-number ${{github.run_number}}
 
       - name: Zip Linux App
         run: |
           cd ECHOPULS/build/linux/x64/release/bundle
-          zip -r echo_pulse_linux_v${{ env.VERSION }}+${{ env.ADJUSTED_RUN_NUMBER }}.zip .
+          zip -r echo_pulse_linux_v${{ env.VERSION }}+${{github.run_number}}.zip .
 
-      - name: Upload Artifacts Linux App
+      - name: Upload Artifacts (Linux)
         uses: actions/upload-artifact@v4
         with:
           name: echo_pulse_linux
-          path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{ env.ADJUSTED_RUN_NUMBER }}.zip
+          path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{github.run_number}}.zip
 
-      - name: Create Release
+      - name: Create Release (Linux)
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{ env.ADJUSTED_RUN_NUMBER }}.zip
+            ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{github.run_number}}.zip
           tag: v${{ env.VERSION }}+${{github.run_number}}
           token: ${{secrets.SECRET_KEY}}
           allowUpdates: true
