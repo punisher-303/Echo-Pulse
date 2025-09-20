@@ -39,7 +39,11 @@ jobs:
           echo "VERSION=$ver" >> $env:GITHUB_ENV
 
       - name: Set build number
-        run: echo "BUILDVERSION=2092" >> $GITHUB_ENV
+        shell: pwsh
+        run: |
+          $buildNumber = 2092
+          Write-Host "Setting BUILDVERSION to: $buildNumber"
+          "BUILDVERSION=$buildNumber" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Create keystore file
         run: |
@@ -56,7 +60,10 @@ jobs:
 
       - name: Build Android APKs
         shell: pwsh
-        run: cd ECHOPULS; flutter build apk --release --split-per-abi --build-number $env:BUILDVERSION
+        run: |
+          Write-Host "Building with build number: $env:BUILDVERSION"
+          cd ECHOPULS
+          flutter build apk --release --split-per-abi --build-number $env:BUILDVERSION
 
       - name: Verify Sign
         run: |
