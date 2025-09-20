@@ -149,7 +149,7 @@ jobs:
           echo "VERSION=$ver" >> $GITHUB_ENV
       
       - name: Set build number
-        run: echo "BUILDVERSION=2092" >> $GITHUB_ENV
+        run: echo "BUILDVERSION=2093" >> $GITHUB_ENV
 
       - name: Build Linux App
         run: cd ECHOPULS && flutter build linux --release --build-number $BUILDVERSION

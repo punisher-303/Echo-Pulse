@@ -1,3 +1,18 @@
+## [4.5.8] - 2025-09-20
+
+### Changed
+- **Bulck Download Added**: Added You can download more song at a time.
+- **showPlayNext**: implt. showPlayNext btn bools for disabling them sometimes.
+- **showAddtoQueue**: implt. showAddtoQueue btn bools for disabling them sometimes.
+- **Discord Rich Presence**: Discord Rich Presence music timeline left update.
+
+### Fixed
+- QueueTitle override fix to broadcast the updated queue title.
+- Show song options in upnext panel.
+- Volume sliding on cover fix for manual control.
+- Discord Rich Presence music timeline left update. 
+- Updated By Anand PM.
+
 ## [4.5.7] - 2025-09-20
 
 ### Changed
