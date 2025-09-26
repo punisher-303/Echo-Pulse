@@ -1,3 +1,12 @@
+## [4.5.9] - 2025-09-26
+
+### Changed
+- **Downloding isssue**: Music download issue fixed.
+
+### Fixed
+- Music download issue , error URL link issue fixed ).
+- Updated By Anand PM.
+
 ## [4.5.8] - 2025-09-20
 
 ### Changed
