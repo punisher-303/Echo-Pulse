@@ -21,7 +21,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.4'
+          flutter-version: '3.35.4'
           channel: 'stable'
 
       - name: Clone Repository
@@ -68,7 +68,6 @@ jobs:
       - name: Verify Sign
         run: |
           jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-release.apk
-          jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-x86-release.apk
           jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
           jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
           jarsigner --verify --verbose ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk
@@ -76,7 +75,6 @@ jobs:
       - name: Rename Android APKs
         run: |
           Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_universal.apk"
-          Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86.apk"
           Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_armeabi-v7a.apk"
           Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_arm64-v8a.apk"
           Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86_64.apk"
@@ -97,7 +95,6 @@ jobs:
           path: |
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_universal.apk
             ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_armeabi-v7a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_arm64-v8a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86_64.apk
@@ -108,7 +105,6 @@ jobs:
           artifacts: |
             ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_universal.apk
-            ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_armeabi-v7a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_arm64-v8a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86_64.apk
@@ -128,7 +124,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.4'
+          flutter-version: '3.35.4'
           channel: stable
 
       - run: |
