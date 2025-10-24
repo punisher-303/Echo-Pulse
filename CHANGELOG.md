@@ -1,4 +1,4 @@
-## [v4.6.1] - 2025-10-25
+## [4.6.1] - 2025-10-25
 
 ### Changed
 - **Flutter Version Upgrade**: Updated Flutter version to 3.35.4 with CI/CD pipeline improvements.
