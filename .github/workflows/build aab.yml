@@ -62,12 +62,7 @@ jobs:
         shell: pwsh
         run: |
           cd ECHOPULS
-          # Kill any running Kotlin daemons and clean caches
-          Get-Process | Where-Object {$_.ProcessName -like "*kotlin*"} | Stop-Process -Force -ErrorAction SilentlyContinue
-          Remove-Item -Recurse -Force ~/.kotlin -ErrorAction SilentlyContinue
-          Remove-Item -Recurse -Force ~/.gradle/caches -ErrorAction SilentlyContinue
-    
-          flutter build appbundle --release --build-number $env:BUILDVERSION --no-tree-shake-icons
+          flutter build appbundle --release --build-number $env:BUILDVERSION
 
       - name: Rename Android App Bundle
         run: |
