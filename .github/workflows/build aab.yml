@@ -1,4 +1,4 @@
-name: "Build & Release"
+name: "Build & Abb"
 
 on:
   workflow_dispatch:
