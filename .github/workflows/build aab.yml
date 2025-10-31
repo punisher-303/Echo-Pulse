@@ -61,6 +61,7 @@ jobs:
       - name: Build with Clean Kotlin Cache
         shell: pwsh
         run: |
+          cd ECHOPULS
           # Kill any running Kotlin daemons and clean caches
           Get-Process | Where-Object {$_.ProcessName -like "*kotlin*"} | Stop-Process -Force -ErrorAction SilentlyContinue
           Remove-Item -Recurse -Force ~/.kotlin -ErrorAction SilentlyContinue
