@@ -12,8 +12,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup-Java
-        uses: actions/setup-java@v3.12.0
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           distribution: 'oracle'
           java-version: '17'
@@ -22,66 +22,54 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.35.4'
-          channel: 'stable'
-
-      - name: Clone Repository
-        run: git clone https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
 
       - name: Install Dependencies
-        run: cd ECHOPULS && flutter pub get
+        run: flutter pub get
 
       - name: Extract version from pubspec.yaml
-        shell: powershell
+        shell: pwsh
         run: |
-          $vLine = Select-String -Path ECHOPULS\pubspec.yaml -Pattern '^version:\s*(\S+)' | Select-Object -First 1
-          if (-not $vLine) { Write-Error 'version not found in pubspec.yaml'; exit 1 }
-          $ver = $vLine.Matches[0].Groups[1].Value.Split('+')[0]
-          echo "VERSION=$ver" >> $env:GITHUB_ENV
+          $vLine = Get-Content pubspec.yaml | Select-String '^version:\s*(\S+)'
+          $ver = $vLine.Matches.Groups[1].Value.Split('+')[0]
+          "VERSION=$ver" >> $env:GITHUB_ENV
 
       - name: Set build number
         shell: pwsh
         run: |
-          $buildNumber = 2096
-          Write-Host "Setting BUILDVERSION to: $buildNumber"
-          "BUILDVERSION=$buildNumber" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "BUILDVERSION=2096" >> $env:GITHUB_ENV
 
       - name: Create keystore file
-        run: |
-          $b64 = "${{ secrets.KEY_STORE }}"
-          $filename = "./ECHOPULS/android/Echopulse.jks"
-          $bytes = [Convert]::FromBase64String($b64)
-          [IO.File]::WriteAllBytes($filename, $bytes)     
-
-      - name: Create Keystore properties
-        run: |
-          echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ./ECHOPULS/android/key.properties
-          echo storePassword=\${{ secrets.STORE_PASSWORD }} >> ./ECHOPULS/android/key.properties
-          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ./ECHOPULS/android/key.properties
-
-      - name: Build with Clean Kotlin Cache
         shell: pwsh
         run: |
-          cd ECHOPULS
-          flutter build appbundle --release --build-number $env:BUILDVERSION
+          $bytes = [Convert]::FromBase64String("${{ secrets.KEY_STORE }}")
+          [IO.File]::WriteAllBytes("android/app/key.jks", $bytes)
+
+      - name: Create Keystore properties
+        shell: pwsh
+        run: |
+          "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
+          "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+
+      - name: Build AAB
+        run: flutter build appbundle --release --build-number ${{ env.BUILDVERSION }}
 
       - name: Rename Android App Bundle
+        shell: pwsh
         run: |
-          Rename-Item -Path "ECHOPULS/build/app/outputs/bundle/release/*.aab" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab"
+          Move-Item "build/app/outputs/bundle/release/app-release.aab" "build/app/outputs/bundle/release/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab"
 
-      - name: Upload Artifacts (Windows+Android)
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Release
-          path: |
-            ECHOPULS/build/app/outputs/bundle/release/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab
+          name: Release-AAB
+          path: build/app/outputs/bundle/release/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab
 
-      - name: Create Release (Windows+Android)
+      - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: |
-            ECHOPULS/build/app/outputs/bundle/release/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab
+          artifacts: build/app/outputs/bundle/release/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab
           tag: v${{ env.VERSION }}+${{ env.BUILDVERSION }}
-          token: ${{secrets.SECRET_KEY}}
+          token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
           omitBody: true
-          prerelease: false
