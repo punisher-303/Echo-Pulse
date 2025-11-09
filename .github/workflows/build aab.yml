@@ -58,11 +58,18 @@ jobs:
           echo storePassword=\${{ secrets.STORE_PASSWORD }} >> ./ECHOPULS/android/key.properties
           echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ./ECHOPULS/android/key.properties
 
+      - name: Clean build caches
+        run: |
+          flutter clean
+          rm -rf android/.gradle
+          rm -rf ~/.pub-cache
+          ./gradlew clean
+
       - name: Build with Clean Kotlin Cache
         shell: pwsh
         run: |
           cd ECHOPULS
-          flutter build appbundle --release --build-number $env:BUILDVERSION --no-tree-shake-icons
+          flutter build appbundle --release --build-number $env:BUILDVERSION --no-tree-shake-icons --no-pub
 
       - name: Rename Android App Bundle
         run: |
