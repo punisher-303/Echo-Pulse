@@ -62,7 +62,7 @@ jobs:
         shell: pwsh
         run: |
           cd ECHOPULS
-          flutter build appbundle --release --build-number $env:BUILDVERSION
+          flutter build appbundle --release --build-number $env:BUILDVERSION --no-tree-shake-icons
 
       - name: Rename Android App Bundle
         run: |
