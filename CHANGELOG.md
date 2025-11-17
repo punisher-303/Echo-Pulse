@@ -1,8 +1,8 @@
 ## [4.6.2] - 2025-11-4
 
 ### Changed
-- **SDK 35**: Made sdk 35 for Playstore.
-- **Bundle added**: Buils AAB File for playstore.
+- **Bug Fixed**: Some Bugs fixed.
+- **Download fix**: Download fix.
 
 ### Fixed
 - **Isar Version Compatibility**: Fixed Isar database version compatibility issues.
