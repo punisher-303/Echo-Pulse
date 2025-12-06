@@ -5,7 +5,7 @@
 <img src=https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white > <img src=https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white /> <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black"/>
 </p>
 
-Echo Pulse is experimental cross-platform open Source Music player designed to bring you Ad-free tunes from various sources. Dive into a world of limitless music from platforms like YouTube and Jio Saavn, with more sources blooming soon! 🌼🎵
+Echo Pulse is experimental cross-platform open Source Music player designed to bring you Ad-free tunes from various sources. Dive into a world of limitless music from platforms like YouTube and Fuk Saavn, with more sources blooming soon! 🌼🎵
 
 
 ![Echo Pulse ScrnShots](https://github.com/user-attachments/assets/15793b16-4a8f-4e8a-abe9-571ef50c962f)

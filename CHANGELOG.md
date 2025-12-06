@@ -1,3 +1,52 @@
+## [4.6.4] - 2025-12-07
+
+### Added
+- **Shortcut Pressed Indicator for Desktop**: Added visual indicator for pressed keyboard shortcuts on desktop platforms.
+- **New Flavor Dev[Android]**: Introduced a new development flavor for Android builds.
+
+### Fixed
+- **What's New Font Family**: Fixed font family issues in the "What's New" section.
+- **Keyboard Shortcut**: Resolved issues with keyboard shortcuts functionality.
+- **Add to Playlist**: Fixed bugs in the add to playlist feature.
+- **Player Disposer Problem**: Addressed player disposer issues on Realme, Oppo, and similar devices.
+
+## [4.6.3] - 2025-12-07
+
+### Added
+- **Library Item Search Box**: Added search functionality for library items to improve navigation and discovery.
+- **New Search in Playlist Database Function**: Implemented enhanced search capabilities within playlist databases.
+- **DNS Checker**: Added DNS connectivity checking feature for better network diagnostics.
+- **Touch Device Support**: Improved support for touch-based interactions across the application.
+- **Redesigned Up Next Panel**: Completely redesigned the "Up Next" panel with modern UI elements.
+- **Full Screen Lyrics Viewer**: Introduced a new full-screen lyrics viewing mode with enhanced display options.
+- **Auto Scroll in Queue**: Automatic scroll to every song changed in the queue.
+
+### Changed
+- **New Progress Bar for Player**: Implemented a new progress bar design for the media player.
+- **Up Next Panel and Song Tile Improvements**: Enhanced the "Up Next" panel and song tiles for better usability and appearance.
+- **Ambient Background Enhancement**: Improved ambient background effects throughout the application.
+- **Song Info UI Updates**: Updated the song information display interface for better readability.
+- **Add to Playlist UI**: Redesigned the "Add to Playlist" feature with circular stacked avatars and improved layout.
+- **Player Enhancements**: Various improvements to the media player functionality and user experience.
+- **Custom Animated List**: Implemented custom animated lists for smoother UI transitions.
+- **Subtitle Override in Song Model**: Added ability to override subtitles in song metadata.
+- **Fullscreen Up Next Panel**: Made the fullscreen "Up Next" panel translucent for better visual integration.
+- **Lyric Widget Enhancements**: Improved colors and icons in the lyrics widget.
+- **Player UI Optimizations**: Optimized player interface for better performance and usability.
+- **Gradient Adjustments**: Fine-tuned gradient effects in the player interface.
+- **Media Kit Integration**: Switched to MediaKit for Android platform for improved media handling.
+
+### Fixed
+- **Font Fixes**: Resolved font rendering issues across the application.
+- **Mini Player Fixes**: Fixed bleed and progress bar issues in the mini player.
+- **Warning Fixes**: Addressed various deprecation warnings, including `.withOpacity` usage.
+- **Full Screen Lyric View**: Corrected display issues in full-screen lyrics mode.
+- **Auto Wake Controls**: Fixed auto-scroll behavior in wake controls.
+- **Up Next Panel**: Resolved various issues with the "Up Next" panel functionality.
+- **Desktop Handle Fix**: Fixed panel handle behavior on desktop platforms.
+- **Player Reconfiguration**: Corrected player reconfiguration issues on Android.
+- **JSON File Opening**: Partially addressed issues with JSON file handling (ongoing).
+
 ## [4.6.2] - 2025-11-4
 
 ### Changed

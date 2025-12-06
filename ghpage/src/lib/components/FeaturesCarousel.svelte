@@ -4,7 +4,7 @@
 	// All features remain in a flat array
 	const allFeatures = [
 		{ icon: 'fa-solid fa-ban', title: 'Ad-Free Experience', desc: 'Say goodbye to interruptions' },
-		{ icon: 'fa-solid fa-globe', title: 'Multi-Source Player', desc: 'YouTube, Jio Saavn & more' },
+		{ icon: 'fa-solid fa-globe', title: 'Multi-Source Player', desc: 'YouTube, Fuk Saavn & more' },
 		{ icon: 'fa-solid fa-code', title: 'Flutter-Powered', desc: 'Beautiful design meets performance' },
 		{ icon: 'fa-solid fa-music', title: 'Time-Synced Lyrics', desc: 'Sing along perfectly' },
 		{ icon: 'fa-solid fa-download', title: 'Offline Playback', desc: 'Music anywhere, anytime' },
