@@ -1,3 +1,12 @@
+## [4.6.5] - 2025-12-07
+
+### Added
+- **Lyrics new Algorithm**: Lyrics fetching improving.
+
+### Fixed
+- **Jio saavn Removed**: Jio Saavn source removed for copyright issue.
+- **New Source Added**: You Know what i did ;/.
+
 ## [4.6.4] - 2025-12-07
 
 ### Added
