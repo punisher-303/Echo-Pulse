@@ -1,3 +1,12 @@
+## [4.6.51] - 2025-12-08
+
+### Added
+- **Lyrics System**: Improve Lyrics system.
+
+### Fixed
+- **Lyrics Accuracy**: 80% to 95% increases.
+- **Lyrics Timing**: Lyrics matching timing accuracy increases.
+
 ## [4.6.5] - 2025-12-07
 
 ### Added
