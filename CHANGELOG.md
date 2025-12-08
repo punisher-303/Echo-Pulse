@@ -1,7 +1,10 @@
-## [4.6.51] - 2025-12-08
+## [4.6.6] - 2025-12-08
 
 ### Added
 - **Lyrics System**: Improve Lyrics system.
+
+### Changed
+- **Youtube Explode Update**: Youtube source update to 3.0.5.
 
 ### Fixed
 - **Lyrics Accuracy**: 80% to 95% increases.
