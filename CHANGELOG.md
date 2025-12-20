@@ -1,10 +1,21 @@
+## [4.6.7] - 2025-12-20
+
+### Added
+- **Live Room**: Room session added for listen music together and enjoy with your friends.
+- **Live Chat**: Each room have each chat room you can chat with friends (room members only).
+
+### Fixed
+- **Live sync**: live sync added for low latency.
+- **Power right**: Room creator and listeners have same power for control the music.
+
+
 ## [4.6.6] - 2025-12-08
 
 ### Added
 - **Lyrics System**: Improve Lyrics system.
 
 ### Changed
-- **Youtube Explode Update**: Youtube source update to 3.0.5.
+- **YouTube Explode Update**: YouTube source update to 3.0.5.
 
 ### Fixed
 - **Lyrics Accuracy**: 80% to 95% increases.
