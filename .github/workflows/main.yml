@@ -65,7 +65,14 @@ jobs:
           cd ECHOPULS
           flutter build apk --release --split-per-abi --build-number $env:BUILDVERSION
 
-      - name: Verify Sign
+      # --- NEW STEP: Build App Bundle ---
+      - name: Build Android App Bundle
+        shell: pwsh
+        run: |
+          cd ECHOPULS
+          flutter build appbundle --release --build-number $env:BUILDVERSION
+
+      - name: Verify Sign (APK)
         run: |
           $buildToolsDir = Get-ChildItem "$env:ANDROID_HOME\build-tools" | Where-Object { $_.PSIsContainer } | Sort-Object Name -Descending | Select-Object -First 1
                   Write-Host "Using build tools version: $($buildToolsDir.Name)"
@@ -81,6 +88,11 @@ jobs:
           Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_arm64-v8a.apk"
           Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86_64.apk"
 
+      # --- NEW STEP: Rename App Bundle ---
+      - name: Rename Android Bundle
+        run: |
+          Rename-Item -Path "ECHOPULS/build/app/outputs/bundle/release/app-release.aab" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab"
+          
       - name: Build Windows App
         run: cd ECHOPULS && flutter build windows --release --build-number ${{ env.BUILDVERSION }}
 
@@ -100,7 +112,8 @@ jobs:
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_armeabi-v7a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_arm64-v8a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86_64.apk
-
+            ECHOPULS/build/app/outputs/bundle/release/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab
+            
       - name: Create Release (Windows+Android)
         uses: ncipollo/release-action@v1
         with:
@@ -110,6 +123,7 @@ jobs:
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_armeabi-v7a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_arm64-v8a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86_64.apk
+            ECHOPULS/build/app/outputs/bundle/release/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab
           tag: v${{ env.VERSION }}+${{ env.BUILDVERSION }}
           token: ${{secrets.SECRET_KEY}}
           allowUpdates: true
