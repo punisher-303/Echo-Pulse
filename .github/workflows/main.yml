@@ -66,10 +66,13 @@ jobs:
           flutter build apk --release --split-per-abi --build-number $env:BUILDVERSION
 
       # --- NEW STEP: Build App Bundle ---
+      - name: Clean Build Directory
+        run: cd ECHOPULS && flutter clean
       - name: Build Android App Bundle
         shell: pwsh
         run: |
           cd ECHOPULS
+          flutter pub get
           flutter build appbundle --release --build-number $env:BUILDVERSION
 
       - name: Verify Sign (APK)
