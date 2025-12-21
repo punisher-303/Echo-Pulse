@@ -1,6 +1,16 @@
 ## [4.6.7] - 2025-12-20
 
 ### Added
+- **Room Lock**: Room session acan lock and unlock for privacy anyone can lock and unlock the room.
+- **Hoster name**: Display the hoster name in room menu.
+
+### Fixed
+- **Sync llogic change**: live sync will accurate and resposible.
+- **Status check**: Current status check every 4 second is the music play or pause or seeked and update every 4 sec help to sync live.
+
+## [4.6.7] - 2025-12-20
+
+### Added
 - **Live Room**: Room session added for listen music together and enjoy with your friends.
 - **Live Chat**: Each room have each chat room you can chat with friends (room members only).
 
