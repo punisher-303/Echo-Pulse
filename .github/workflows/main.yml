@@ -41,7 +41,7 @@ jobs:
       - name: Set build number
         shell: pwsh
         run: |
-          $buildNumber = 2101
+          $buildNumber = 2102
           Write-Host "Setting BUILDVERSION to: $buildNumber"
           "BUILDVERSION=$buildNumber" | Out-File -FilePath $env:GITHUB_ENV -Append
 
@@ -161,7 +161,7 @@ jobs:
           echo "VERSION=$ver" >> $GITHUB_ENV
       
       - name: Set build number
-        run: echo "BUILDVERSION=2101" >> $GITHUB_ENV
+        run: echo "BUILDVERSION=2102" >> $GITHUB_ENV
 
       - name: Build Linux App
         run: cd ECHOPULS && flutter build linux --release --build-number $BUILDVERSION
