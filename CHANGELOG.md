@@ -1,11 +1,11 @@
-## [4.6.7] - 2025-12-20
+## [4.6.8] - 2025-12-22
 
 ### Added
-- **Room Lock**: Room session acan lock and unlock for privacy anyone can lock and unlock the room.
+- **Room Lock**: Room session can lock and unlock for privacy anyone can lock and unlock the room.
 - **Hoster name**: Display the hoster name in room menu.
 
 ### Fixed
-- **Sync llogic change**: live sync will accurate and resposible.
+- **Sync logic change**: live sync will accurate and responsible.
 - **Status check**: Current status check every 4 second is the music play or pause or seeked and update every 4 sec help to sync live.
 
 ## [4.6.7] - 2025-12-20
