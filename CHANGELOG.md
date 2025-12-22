@@ -3,6 +3,9 @@
 ### Added
 - **Room Lock**: Room session can lock and unlock for privacy anyone can lock and unlock the room.
 - **Hoster name**: Display the hoster name in room menu.
+- **Emoji Picker**: You can pic emojis from chat bar like conversation apps.
+- **Unique colour**: Each person get unique colour in chat box.
+- **IOS Blur**: IOS Blur style applied in popup menu.
 
 ### Fixed
 - **Sync logic change**: live sync will accurate and responsible.
