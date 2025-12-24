@@ -60,7 +60,7 @@ jobs:
         shell: pwsh
         run: |
           cd ECHOPULS
-          flutter build appbundle --release --build-number $env:BUILDVERSION
+          flutter build appbundle --release --no-daemon --build-number $env:BUILDVERSION
       - name: Rename Android Bundle
         run: |
           Rename-Item -Path "ECHOPULS/build/app/outputs/bundle/release/app-release.aab" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab"
