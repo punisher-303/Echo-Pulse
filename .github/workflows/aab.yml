@@ -8,14 +8,21 @@ jobs:
   build:
     name: Android Bundle Build
     runs-on: windows-latest
+    
+    # 👇 THIS IS THE FIX FOR THE FILE LOCKING/CACHE ERRORS
+    env:
+      GRADLE_OPTS: '-Dorg.gradle.daemon=false'
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+      
       - name: Setup-Java
         uses: actions/setup-java@v3.12.0
         with:
           distribution: 'oracle'
           java-version: '17'
+      
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -26,7 +33,11 @@ jobs:
         run: git clone https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
       
       - name: Install Dependencies
-        run: cd ECHOPULS && flutter pub get
+        shell: pwsh
+        run: |
+          cd ECHOPULS
+          flutter clean
+          flutter pub get
       
       - name: Extract version from pubspec.yaml
         shell: powershell
@@ -60,7 +71,9 @@ jobs:
         shell: pwsh
         run: |
           cd ECHOPULS
+          # Note: We do NOT use --no-daemon here because GRADLE_OPTS handles it
           flutter build appbundle --release --build-number $env:BUILDVERSION
+
       - name: Rename Android Bundle
         run: |
           Rename-Item -Path "ECHOPULS/build/app/outputs/bundle/release/app-release.aab" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab"
