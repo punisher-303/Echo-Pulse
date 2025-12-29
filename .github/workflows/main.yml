@@ -25,7 +25,7 @@ jobs:
           channel: 'stable'
 
       - name: Clone Repository
-        run: git clone https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
+        run: git clone -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
 
       - name: Install Dependencies
         run: cd ECHOPULS && flutter pub get
