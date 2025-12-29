@@ -3,7 +3,7 @@
 ### Added
 - **Canva Video**: A background video will play exact like spotify.
 - **Video Behavior**: The video plays "in the background" of the player screen, behind all the buttons and text, just like on Spotify.
-- **When App is Closed/Minimized**: he video will pause to save battery and data. Only the music audio will continue playing in the background. This is the standard behavior for music apps.
+- **When App is Closed/Minimized**: The video will pause to save battery and data. Only the music audio will continue playing in the background. This is the standard behavior for music apps.
 
 ## [4.6.8] - 2025-12-22
 
