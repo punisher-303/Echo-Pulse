@@ -1,3 +1,9 @@
+## [4.7.0] - 2025-12-30
+
+### Fixed
+- **ECM Source Canvas Fix**: Primary artist name is missing and it's fixed now canvas will work fine.
+- **Artist Name Update**: Priorities the primary artist name
+
 ## [4.6.9] - 2025-12-29
 
 ### Added
