@@ -63,7 +63,7 @@ jobs:
         run: |
           Write-Host "Building with build number: $env:BUILDVERSION"
           cd ECHOPULS
-          flutter build apk --release --split-per-abi --build-number $env:BUILDVERSION
+          flutter build apk --release --build-number $env:BUILDVERSION -- -Psplit=true
       
       - name: Verify Sign (APK)
         run: |
@@ -174,3 +174,4 @@ jobs:
           omitBody: true
 
           prerelease: true
+
