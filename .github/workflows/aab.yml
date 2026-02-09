@@ -72,7 +72,7 @@ jobs:
         run: |
           cd ECHOPULS
           # Note: We do NOT use --no-daemon here because GRADLE_OPTS handles it
-          flutter build appbundle --release --build-number $env:BUILDVERSION
+          flutter build appbundle --release --build-number $env:BUILDVERSION -- -Psplit=true
 
       - name: Rename Android Bundle
         run: |
