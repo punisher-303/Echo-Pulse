@@ -63,7 +63,6 @@ jobs:
         run: |
           Write-Host "Building with build number: $env:BUILDVERSION"
           cd ECHOPULS
-          $env:ORG_GRADLE_PROJECT_split = "true"
           flutter build apk --release --build-number $env:BUILDVERSION
       
       - name: Verify Sign (APK)
@@ -175,5 +174,6 @@ jobs:
           omitBody: true
 
           prerelease: true
+
 
 
