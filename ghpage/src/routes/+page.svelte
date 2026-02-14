@@ -61,20 +61,40 @@
 				onEnterBack: () => active = i
 			});
 
-			// Animate elements within the section
-			const animatable = section.querySelectorAll('h1, h2, p, .anim-target');
-			if (animatable.length > 0) {
-				gsap.from(animatable, {
+			// 1. Text Reveals (Masked)
+			const textReveals = section.querySelectorAll('.reveal-text');
+			if (textReveals.length > 0) {
+				gsap.fromTo(textReveals, 
+					{ yPercent: 110, rotate: 2 }, // Start slightly rotated and below
+					{
+						scrollTrigger: {
+							trigger: section,
+							start: 'top 75%',
+							toggleActions: 'play none none reverse'
+						},
+						yPercent: 0,
+						rotate: 0,
+						duration: 1.2,
+						stagger: 0.1,
+						ease: 'power4.out'
+					}
+				);
+			}
+
+			// 2. Standard Fade-ins (for non-masked elements)
+			const fadeTargets = section.querySelectorAll('.anim-target');
+			if (fadeTargets.length > 0) {
+				gsap.from(fadeTargets, {
 					scrollTrigger: {
 						trigger: section,
-						start: 'top 85%', // Trigger slightly earlier
+						start: 'top 80%',
 						toggleActions: 'play none none reverse'
 					},
-					y: 80, // Larger movement for dramatic effect
+					y: 50,
 					opacity: 0,
-					duration: 1.2,
-					stagger: 0.15, // Stagger text lines
-					ease: 'power4.out' // Heavy, cinematic ease
+					duration: 1,
+					stagger: 0.2,
+					ease: 'power3.out'
 				});
 			}
 		});
@@ -98,8 +118,9 @@
 
 	<div class="content-wrapper">
 		<section id="section-0" class="content-section">
-			<h1 class="home-title">EchoPulse</h1>
-			<p class="home-subtitle">Multi-source and open music app for free.</p>
+			<div class="text-mask"><h1 class="home-title reveal-text">EchoPulse</h1></div>
+			<div class="text-mask"><p class="home-subtitle reveal-text">Multi-source and open music app for free.</p></div>
+			
 			<div class="support-message anim-target" role="region" aria-label="Support EchoPulse">
 				<span class="lead">Keep EchoPulse alive!</span>
 				<span class="msg">Your support today fuels every <span class="highlight">future update</span>, keeps EchoPulse <span class="highlight">ad-free</span>, and ensures the tunes <span class="highlight">never stop</span>. ✨</span>
@@ -111,8 +132,8 @@
 		</section>
 
 		<section id="section-1" class="content-section">
-			<h2>SourceForge Recognition</h2>
-			<p class="section-subtitle">Proudly recognized by SourceForge community - achieved out of 500,000+ open source projects.</p>
+			<div class="text-mask"><h2 class="reveal-text">SourceForge Recognition</h2></div>
+			<div class="text-mask"><p class="section-subtitle reveal-text">Proudly recognized by SourceForge community - achieved out of 500,000+ open source projects.</p></div>
 			<div class="anim-target">
 				<AwardsGrid />
 			</div>
@@ -126,7 +147,7 @@
 		</section>
 
 		<section id="section-3" class="content-section">
-			<h2>Download Now</h2>
+			<div class="text-mask"><h2 class="reveal-text">Download Now</h2></div>
 			<div class="anim-target">
 				<DownloadButtons />
 			</div>
@@ -169,6 +190,13 @@
 		overflow: hidden; /* Prevent spillover */
 	}
 
+	/* Masking Container */
+	.text-mask {
+		overflow: hidden;
+		margin-bottom: 0.5rem; /* Maintain spacing between blocks */
+		display: block;
+	}
+
 	/* Desktop Typography & Styles */
 	.content-section h2 {
 		font-size: 3.5rem; /* Larger headers */
@@ -176,11 +204,12 @@
 		color: #fff;
 		text-transform: uppercase;
 		text-align: left; /* Align left for rockstar vibe */
-		margin-bottom: 2rem;
+		margin-bottom: 0; /* Margin handled by mask */
 		letter-spacing: 2px;
 		line-height: 0.9;
 		background: none; /* Remove gradient text for now, keep it stark white or specific accent */
 		-webkit-text-fill-color: initial;
+		padding-bottom: 5px; /* Prevent descender clipping */
 	}
 
 	.home-title {
@@ -189,11 +218,12 @@
 		font-weight: 900;
 		font-style: normal;
 		text-transform: uppercase;
-		margin-bottom: 0.5rem;
+		margin-bottom: 0; /* Margin handled by mask */
 		text-shadow: none;
 		letter-spacing: -2px;
 		line-height: 0.85;
 		color: #fff;
+		padding-bottom: 10px; /* Prevent descender clipping */
 	}
 
 	.home-subtitle {
@@ -203,7 +233,7 @@
 		font-size: 1.2rem;
 		color: var(--accent-color); /* Neon accent */
 		margin-top: 1rem;
-		margin-bottom: 3rem;
+		margin-bottom: 0;
 		max-width: 700px;
 		letter-spacing: 1px;
 		background: none;
@@ -219,7 +249,7 @@
 		font-size: 1.1rem;
 		color: rgba(255, 255, 255, 0.7);
 		margin-top: 0.1rem;
-		margin-bottom: 3rem;
+		margin-bottom: 0;
 		max-width: 600px;
 		letter-spacing: 0.5px;
 		line-height: 1.5;
