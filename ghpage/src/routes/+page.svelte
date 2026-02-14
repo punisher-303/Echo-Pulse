@@ -147,7 +147,7 @@
 		</section>
 
 		<section id="section-3" class="content-section">
-			<div class="text-mask"><h2 class="reveal-text">Download Now</h2></div>
+			<div class="text-mask"><h2 class="reveal-text" style="text-align: center;">Download Now</h2></div>
 			<div class="anim-target">
 				<DownloadButtons />
 			</div>
