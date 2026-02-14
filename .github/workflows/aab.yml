@@ -30,7 +30,7 @@ jobs:
           channel: 'stable'
       
       - name: Clone Repository
-        run: git clone https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
+        run: git clone -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
       
       - name: Install Dependencies
         shell: pwsh
@@ -50,7 +50,7 @@ jobs:
       - name: Set build number
         shell: pwsh
         run: |
-          $buildNumber = 2104
+          $buildNumber = 2105
           Write-Host "Setting BUILDVERSION to: $buildNumber"
           "BUILDVERSION=$buildNumber" | Out-File -FilePath $env:GITHUB_ENV -Append
       
