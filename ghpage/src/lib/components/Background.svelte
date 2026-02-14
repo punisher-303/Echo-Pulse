@@ -58,7 +58,7 @@
     const s = Math.random() * 1.5 + 0.5,
       x = Math.random() * canvasEl.width * 0.6 + canvasEl.width * 0.4, // Shift particles to the right
       y = Math.random() * canvasEl.height,
-      c = `hsl(${Math.random() * 50 + 250}, 100%, ${Math.random() * 20 + 60}%)`, // Adjust brightness for variety
+      c = `hsl(${Math.random() * 60 + 280}, 100%, ${Math.random() * 20 + 60}%)`, // Pink/Purple/Magenta range
       sx = (Math.random() - 0.5) * 0.1,
       sy = (Math.random() - 0.5) * 0.1;
     particles.push(new Particle(x, y, s, c, sx, sy));

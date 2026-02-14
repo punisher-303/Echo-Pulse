@@ -2,45 +2,74 @@
 @import 'tailwindcss';
 
 :root {
-	--bg-color-deep: #0a0613;
-	--bg-color-mid: #140b21;
+	--bg-color-deep: #000000;
+	--bg-color-mid: #0a0a0a;
 	--text-primary: #ffffff;
-	--text-secondary: #c3b8d9;
-	--accent-color: #a754f8;
-	--accent-gradient: linear-gradient(45deg, #b86ffc, #8e66ff);
-	--glass-bg: rgba(255, 255, 255, 0.05);
-	--glass-border: rgba(255, 255, 255, 0.15);
+	--text-secondary: #e0e0e0;
+	--accent-color: #ff00a0;
+	/* Vice City Gradient: Neon Pink -> Sunset Orange */
+	--accent-gradient: linear-gradient(90deg, #ff00a0, #ff8a00, #9d00ff);
+	--glass-bg: rgba(255, 255, 255, 0.03);
+	--glass-border: rgba(255, 255, 255, 0.1);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
 
-html, body, #svelte { height: 100%; }
+html,
+body,
+#svelte {
+	height: 100%;
+}
 
 /* Allow page scroll */
-html, body { overflow-y: auto; overflow-x: hidden; overscroll-behavior: auto; }
+html,
+body {
+	overflow-y: auto;
+	overflow-x: hidden;
+	overscroll-behavior: auto;
+}
 
 /* Avoid accidental horizontal scrollbars anywhere */
-* { scrollbar-width: thin; }
+* {
+	scrollbar-width: thin;
+}
 
 /* Mobile-specific improvements */
 @media (max-width: 992px) {
-  html, body { 
-    overflow-y: auto; 
-    height: auto;
-    min-height: 100vh;
-    position: relative;
-    width: 100%;
-  }
-  
-  #svelte {
-    height: auto;
-    min-height: 100vh;
-    overflow-y: auto;
-  }
+
+	html,
+	body {
+		overflow-y: auto;
+		height: auto;
+		min-height: 100vh;
+		position: relative;
+		width: 100%;
+	}
+
+	#svelte {
+		height: auto;
+		min-height: 100vh;
+		overflow-y: auto;
+	}
 }
 
 body {
-	font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+	font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
 	background-color: var(--bg-color-deep);
 	color: var(--text-primary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: 'Archivo Black', sans-serif;
+	text-transform: uppercase;
+	letter-spacing: 1px;
 }

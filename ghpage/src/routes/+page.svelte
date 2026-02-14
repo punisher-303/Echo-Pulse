@@ -38,6 +38,7 @@
 		}, 5000);
 	}
 
+	// Check if we're on mobile
 	function checkMobile() {
 		isMobile = window.innerWidth <= 992;
 	}
@@ -66,23 +67,17 @@
 				gsap.from(animatable, {
 					scrollTrigger: {
 						trigger: section,
-						start: 'top 80%',
+						start: 'top 85%', // Trigger slightly earlier
 						toggleActions: 'play none none reverse'
 					},
-					y: 50,
+					y: 80, // Larger movement for dramatic effect
 					opacity: 0,
-					duration: 1,
-					stagger: 0.2,
-					ease: 'power3.out'
+					duration: 1.2,
+					stagger: 0.15, // Stagger text lines
+					ease: 'power4.out' // Heavy, cinematic ease
 				});
 			}
 		});
-
-		// Parallax for the AssetFigure (Hero Image)
-		// Assuming AssetFigure is fixed or absolute, we might want to animate it based on scroll
-		// For now, let's just leave it as is or add a subtle parallax if it was part of the flow.
-		// Since it is fixed in the layout (likely), we might not need to scroll it, 
-		// BUT the original design had it fixed. Let's keep it fixed.
 
 		return () => {
 			window.removeEventListener('resize', onResize);
@@ -166,7 +161,7 @@
 		flex-direction: column;
 		justify-content: center;
 		min-height: 100vh; /* Each section takes at least full viewport height */
-		padding: 4rem 5% 4rem 5%;
+		padding: 6rem 5% 6rem 5%; /* Increased padding for breathing room */
 		/* Adjust padding right to not overlap with the fixed image too much on desktop */
 		padding-right: 55%; 
 		position: relative;
@@ -176,87 +171,90 @@
 
 	/* Desktop Typography & Styles */
 	.content-section h2 {
-		font-size: 2.5rem;
-		font-weight: 700;
-		background: linear-gradient(45deg, #ff8a00, #e52e71);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		text-align: center;
-		margin-bottom: 3.5rem;
-		letter-spacing: 1px;
+		font-size: 3.5rem; /* Larger headers */
+		font-weight: 900;
+		color: #fff;
+		text-transform: uppercase;
+		text-align: left; /* Align left for rockstar vibe */
+		margin-bottom: 2rem;
+		letter-spacing: 2px;
+		line-height: 0.9;
+		background: none; /* Remove gradient text for now, keep it stark white or specific accent */
+		-webkit-text-fill-color: initial;
 	}
 
 	.home-title {
-		font-family: 'Borel', sans-serif;
-		font-size: 4.5rem;
-		font-weight: 700;
-		font-style: italic;
-		margin-bottom: 0.2rem;
-		text-shadow: 0 0 15px rgba(200, 150, 255, 0.4);
+		font-family: 'Archivo Black', sans-serif;
+		font-size: 6rem; /* Massive title */
+		font-weight: 900;
+		font-style: normal;
+		text-transform: uppercase;
+		margin-bottom: 0.5rem;
+		text-shadow: none;
+		letter-spacing: -2px;
+		line-height: 0.85;
+		color: #fff;
 	}
 
 	.home-subtitle {
-		font-family: 'Borel', cursive;
-		font-weight: 700;
+		font-family: 'Inter', sans-serif; /* Clean body font */
+		font-weight: 600;
 		font-style: normal;
-		font-size: 1.4rem;
-		color: rgba(255, 237, 248, 0.949);
-		margin-top: -0.8rem;
-		margin-bottom: 2.5rem;
+		font-size: 1.2rem;
+		color: var(--accent-color); /* Neon accent */
+		margin-top: 1rem;
+		margin-bottom: 3rem;
 		max-width: 700px;
-		letter-spacing: 0.3px;
-		background: linear-gradient(45deg, #ff5258, #ffd48e);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		line-height: 1.2;
-		padding-top: 0.6rem;
+		letter-spacing: 1px;
+		background: none;
+		-webkit-text-fill-color: initial;
+		line-height: 1.4;
+		text-transform: uppercase;
 	}
 	
 	.section-subtitle {
-		font-family: 'Borel', cursive;
-		font-weight: 700;
+		font-family: 'Inter', sans-serif;
+		font-weight: 400;
 		font-style: normal;
-		font-size: 1.4rem;
-		color: rgba(255, 237, 248, 0.949);
+		font-size: 1.1rem;
+		color: rgba(255, 255, 255, 0.7);
 		margin-top: 0.1rem;
-		margin-bottom: 2.5rem;
-		max-width: 700px;
-		letter-spacing: 0.3px;
-		line-height: 1.2;
-		padding-top: 0.6rem;
-		text-align: center;
-		margin-left: auto;
+		margin-bottom: 3rem;
+		max-width: 600px;
+		letter-spacing: 0.5px;
+		line-height: 1.5;
+		text-align: left;
+		margin-left: 0; /* Align left */
 		margin-right: auto;
-		background: linear-gradient(45deg, #ff5258, #ffd48e);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
+		background: none;
+		-webkit-text-fill-color: initial;
 	}
 
 	.support-message {
-		font-family: 'IBM Plex Sans', 'Montserrat', sans-serif;
-		font-size: 1.1rem;
+		font-family: 'Inter', sans-serif;
+		font-size: 1rem;
 		font-weight: 500;
 		color: rgb(255, 255, 255);
-		margin-bottom: 1.8rem;
-		max-width: 480px;
+		margin-bottom: 2.5rem;
+		max-width: 500px;
 		line-height: 1.6;
-		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.645);
-		padding: 1rem 1.2rem;
-		background: rgba(255, 255, 255, 0.05);
-		border-left: 3px solid rgb(235, 49, 111);
-		border-radius: 8px;
+		text-shadow: none;
+		padding: 1.5rem;
+		background: rgba(255, 255, 255, 0.05); /* Subtle glass */
+		border-left: 4px solid var(--accent-color); /* Neon accent border */
+		border-radius: 0; /* Boxy look */
 		backdrop-filter: blur(10px);
 	}
 
 	.support-message .highlight {
-		color: #ff5258;
+		color: var(--accent-color);
 		font-weight: 700;
-		text-shadow: none;
+		text-shadow: 0 0 10px rgba(255, 0, 160, 0.4);
 	}
 
 	.content-section h2, .section-subtitle {
 		max-width: 720px;
-		margin-left: auto;
+		margin-left: 0;
 		margin-right: auto;
 	}
 
@@ -264,42 +262,44 @@
 	@media (max-width: 992px) {
 		.content-section {
 			min-height: 100vh; /* Can assume auto if we don't want full height on mobile, but 100vh is good */
-			padding: 40px 15px;
-			padding-right: 15px; /* Reset padding for mobile */
+			padding: 80px 20px;
+			padding-right: 20px; /* Reset padding for mobile */
 			justify-content: center;
-			background: rgba(16, 11, 33, 0.15);
-			backdrop-filter: blur(25px);
-			border-radius: 15px;
-			margin: 10px 12px;
+			background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(10,10,10,0.9) 100%); /* Fade out bottom */
+			backdrop-filter: none;
+			border-radius: 0;
+			margin: 0;
 		}
 
 		.home-title {
-			font-size: clamp(2.2rem, 8vw, 3rem);
-			line-height: 1.2;
+			font-size: clamp(3rem, 10vw, 4.5rem);
+			line-height: 0.9;
 			margin-bottom: 1rem;
 		}
 
 		.home-subtitle {
-			font-size: clamp(0.8rem, 6vw, 1.2rem);
-			line-height: 1.3;
-			margin-bottom: 1.5rem;
+			font-size: clamp(0.9rem, 4vw, 1.1rem);
+			line-height: 1.4;
+			margin-bottom: 2rem;
 		}
 
 		.content-section h2 {
-			font-size: clamp(1.0rem, 7vw, 1.6rem);
+			font-size: clamp(2rem, 8vw, 2.5rem);
 			margin-bottom: 1.5rem;
-			line-height: 1.2;
+			line-height: 0.95;
+			text-align: left;
 		}
 
 		.section-subtitle {
-			font-size: clamp(0.9rem, 4.5vw, 1.1rem);
-			line-height: 1.4;
-			margin-bottom: 1.5rem;
+			font-size: clamp(0.9rem, 4.5vw, 1rem);
+			line-height: 1.5;
+			margin-bottom: 2rem;
+			text-align: left;
 		}
 
 		.support-message {
-			font-size: clamp(0.85rem, 3.8vw, 1rem);
-			padding: 0.8rem 1rem;
+			font-size: clamp(0.9rem, 4vw, 1rem);
+			padding: 1.2rem;
 		}
 	}
 </style>
