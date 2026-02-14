@@ -1,6 +1,4 @@
 <script>
-	import { onMount, onDestroy } from 'svelte';
-
 	// All features remain in a flat array
 	const allFeatures = [
 		{ icon: 'fa-solid fa-ban', title: 'Ad-Free Experience', desc: 'Say goodbye to interruptions' },
@@ -17,231 +15,140 @@
 		{ icon: 'fa-solid fa-language', title: 'Multi-Language', desc: 'Global accessibility' }
 	];
 
-	let carousel;
-	let rotation = 0;
-	let autoRotateInterval;
-	const numItems = allFeatures.length;
-	const rotationAngle = 360 / numItems;
-	
-	// --- Reactive and Responsive Properties ---
-	let innerWidth = 0;
-	let cardWidth = 220;
-	let carouselRadius = 420;
-
-	// This reactive block recalculates the radius based on screen size
-	$: {
-		if (innerWidth < 500) { // More aggressive mobile breakpoint
-			cardWidth = 180;
-		} else {
-			cardWidth = 220;
-		}
-		
-		// The formula for the radius needed to prevent overlap
-		const gapFactor = 1.2; // Increase for more space between cards
-		const angle = Math.PI / numItems;
-		carouselRadius = (cardWidth / 2) * gapFactor / Math.tan(angle);
-	}
-
-	function startAutoRotate() {
-		stopAutoRotate(); // Ensure no multiple intervals are running
-		autoRotateInterval = setInterval(() => {
-			rotation -= rotationAngle;
-		}, 3000); // Rotate every 3 seconds
-	}
-
-	function stopAutoRotate() {
-		clearInterval(autoRotateInterval);
-	}
-
-	function handleNext() {
-		rotation -= rotationAngle;
-		resetAutoRotate();
-	}
-	
-	function handlePrev() {
-		rotation += rotationAngle;
-		resetAutoRotate();
-	}
-
-	// Reset the timer on manual navigation
-	function resetAutoRotate() {
-		stopAutoRotate();
-		startAutoRotate();
-	}
-
-	onMount(() => {
-		startAutoRotate();
-	});
-
-	onDestroy(() => {
-		stopAutoRotate();
-	});
+	// Split features into two rows for visual interest
+	const midPoint = Math.ceil(allFeatures.length / 2);
+	// Duplicate for seamless loop
+	const row1 = [...allFeatures.slice(0, midPoint), ...allFeatures.slice(0, midPoint)]; 
+	const row2 = [...allFeatures.slice(midPoint), ...allFeatures.slice(midPoint)]; 
 </script>
 
-<svelte:window bind:innerWidth />
-
-<!-- 
-  FIX: This wrapper is the key.
-  It controls the max-width and clips any overflow,
-  making the component a well-behaved citizen on the page.
--->
-<div 
-	class="features-wrapper" 
-	aria-label="Features carousel"
-	style="--radius: {carouselRadius}px; --card-width: {cardWidth}px;"
->
-	<div class="features-container">
-		<div 
-			class="features-carousel" 
-			bind:this={carousel}
-			style="transform: translateZ(calc(var(--radius) * -1)) rotateY({rotation}deg);"
-		>
-			{#each allFeatures as feature, i}
-				<div 
-					class="feature-cell" 
-					style="transform: rotateY({i * rotationAngle}deg) translateZ(var(--radius));"
-				>
-					<div class="feature-card">
-						<i class="{feature.icon}" aria-hidden="true"></i>
-						<span><b>{feature.title}</b><br>{feature.desc}</span>
-					</div>
+<div class="features-wrapper">
+	<!-- Row 1: Scrolls Left -->
+	<div class="marquee-track scroll-left">
+		{#each row1 as feature}
+			<div class="feature-card">
+				<i class="{feature.icon}" aria-hidden="true"></i>
+				<div class="text-content">
+					<b>{feature.title}</b>
+					<span>{feature.desc}</span>
 				</div>
-			{/each}
-		</div>
+			</div>
+		{/each}
 	</div>
 
-	<div class="carousel-navigation">
-		<button class="nav-arrow" on:click={handlePrev} aria-label="Previous feature">
-			<i class="fa-solid fa-chevron-left"></i>
-		</button>
-		<button class="nav-arrow" on:click={handleNext} aria-label="Next feature">
-			<i class="fa-solid fa-chevron-right"></i>
-		</button>
+	<!-- Row 2: Scrolls Right -->
+	<div class="marquee-track scroll-right">
+		{#each row2 as feature}
+			<div class="feature-card">
+				<i class="{feature.icon}" aria-hidden="true"></i>
+				<div class="text-content">
+					<b>{feature.title}</b>
+					<span>{feature.desc}</span>
+				</div>
+			</div>
+		{/each}
 	</div>
 </div>
 
 <style>
-	/* 
-	  The wrapper now controls the maximum size and crucially hides overflow.
-	  This solves the horizontal scrollbar problem.
-	*/
 	.features-wrapper {
 		width: 100%;
-		max-width: 600px; /* Constrains the component on large screens */
-		margin: 1rem auto; /* reduced vertical margin to avoid large gaps on mobile */
-		padding: 0 1rem;
-		box-sizing: border-box;
+		overflow: hidden;
+		position: relative;
+		mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+		-webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+		margin: 2rem 0;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		overflow-x: hidden; /* This is the most important fix! */
+		gap: 1.5rem;
 	}
 
-	/* 
-	  The container's job is to set the 3D space.
-	  It now fills its parent wrapper instead of having a fixed width.
-	*/
-	.features-container {
-		width: 100%;
-		height: 200px; /* adjusted height for better mobile experience */
-		position: relative;
-		perspective: 1000px;
-		margin-bottom: 1rem; /* reduced margin to avoid large gaps on mobile */
+	.marquee-track {
+		display: flex;
+		gap: 1.5rem;
+		width: max-content;
 	}
 
-	.features-carousel {
-		width: 100%;
-		height: 100%;
-		position: absolute;
-		transform-style: preserve-3d;
-		transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+	.scroll-left {
+		animation: scroll 40s linear infinite;
 	}
 
-	.feature-cell {
-		position: absolute;
-		left: calc(50% - (var(--card-width) / 2));
-		top: 10px;
-		width: var(--card-width);
-		height: 180px;
-		backface-visibility: hidden;
-		-webkit-backface-visibility: hidden;
+	.scroll-right {
+		animation: scroll-reverse 45s linear infinite;
+	}
+
+	.features-wrapper:hover .marquee-track {
+		animation-play-state: paused;
 	}
 
 	.feature-card {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		align-items: center;
-		justify-content: center;
-		text-align: center;
-		gap: 0.8rem;
-		width: 100%;
-			height: 160px; /* adjusted height for better mobile experience */
-		padding: 1rem;
-		border-radius: 15px;
-		background: rgba(30, 30, 45, 0.4);
-		border: 1px solid rgba(255, 255, 255, 0.15);
-		backdrop-filter: blur(12px);
-		box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-		color: #d1d1d1;
-		font-size: 0.9rem;
-		box-sizing: border-box;
+		gap: 1rem;
+		padding: 1.2rem 1.5rem;
+		border-radius: 12px;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		backdrop-filter: blur(10px);
+		min-width: 280px;
+		color: #e0e0e0;
+		transition: transform 0.3s ease, border-color 0.3s ease;
 	}
-	
+
+	.feature-card:hover {
+		transform: scale(1.02);
+		border-color: var(--accent-color);
+		background: rgba(255, 255, 255, 0.1);
+	}
+
 	.feature-card i { 
-		font-size: 1.8rem; 
-		background: linear-gradient(45deg, #ff8a00, #e52e71); 
+		font-size: 1.5rem; 
+		background: var(--accent-gradient); 
 		-webkit-background-clip: text; 
 		background-clip: text; 
 		color: transparent; 
+		width: 30px;
+		text-align: center;
+	}
+
+	.text-content {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
 	}
 
 	.feature-card b {
 		color: #ffffff;
 		font-size: 1rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
 	}
 
-	.carousel-navigation {
-		display: flex;
-		gap: 1.5rem;
+	.feature-card span {
+		font-size: 0.85rem;
+		opacity: 0.8;
 	}
 
-	.nav-arrow {
-		background: rgba(255, 255, 255, 0.1);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 50%;
-		width: 44px;
-		height: 44px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		backdrop-filter: blur(10px);
-		color: #ffffff;
+	@keyframes scroll {
+		0% { transform: translateX(0); }
+		100% { transform: translateX(-50%); }
 	}
 
-	.nav-arrow:hover {
-		background: rgba(255, 255, 255, 0.2);
-		transform: scale(1.05);
+	@keyframes scroll-reverse {
+		0% { transform: translateX(-50%); }
+		100% { transform: translateX(0); }
 	}
 
-	/* --- Responsive Adjustments --- */
-	@media (max-width: 500px) {
-			.features-container {
-				height: 170px; /* slightly shorter on very small screens */
-				perspective: 600px;
-			}
-
-		.feature-cell {
-			height: 160px;
-		}
-
+	@media (max-width: 768px) {
 		.feature-card {
-			font-size: 0.85rem;
+			min-width: 240px;
+			padding: 1rem;
 		}
-
+		
 		.feature-card b {
-			font-size: 0.95rem;
+			font-size: 0.9rem;
 		}
 	}
 </style>
