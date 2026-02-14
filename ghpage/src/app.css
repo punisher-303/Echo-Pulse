@@ -16,25 +16,26 @@
 
 html, body, #svelte { height: 100%; }
 
-/* Prevent page scroll; sections handle wheel/swipe themselves */
-html, body { overflow: hidden; overscroll-behavior: none; }
+/* Allow page scroll */
+html, body { overflow-y: auto; overflow-x: hidden; overscroll-behavior: auto; }
 
 /* Avoid accidental horizontal scrollbars anywhere */
 * { scrollbar-width: thin; }
-body { overflow-x: hidden; }
 
 /* Mobile-specific improvements */
 @media (max-width: 992px) {
   html, body { 
-    overflow: hidden; 
-    height: 100vh;
-    position: fixed;
+    overflow-y: auto; 
+    height: auto;
+    min-height: 100vh;
+    position: relative;
     width: 100%;
   }
   
   #svelte {
-    height: 100vh;
-    overflow: hidden;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
   }
 }
 
