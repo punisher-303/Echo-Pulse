@@ -50,7 +50,7 @@ jobs:
       - name: Set build number
         shell: pwsh
         run: |
-          $buildNumber = 2105
+          $buildNumber = 2106
           Write-Host "Setting BUILDVERSION to: $buildNumber"
           "BUILDVERSION=$buildNumber" | Out-File -FilePath $env:GITHUB_ENV -Append
       
