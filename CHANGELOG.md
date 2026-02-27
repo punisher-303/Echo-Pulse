@@ -1,3 +1,19 @@
+## [4.7.2] - 2026-02-27
+
+### Added
+- **Login System**: Login system added using google account or email and password.
+- **Database**: Database added for store user data like playlist settings and history they played.
+
+### Changed
+- **App performance**: App performance improved.
+- **Stability**: Stability improved.
+
+### Fixed
+- **Music Fetching Speed**: Music fetching speed increasing using google dns.
+- **Canva video**: Canva video not playing issue fixed.
+- **Music error retry**: Music error retry system fixed.
+
+
 ## [4.7.0] - 2025-12-30
 
 ### Fixed
