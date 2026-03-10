@@ -1,4 +1,4 @@
-## [4.7.2] - 2026-02-27
+## [4.7.2] - 2026-03-10
 
 ### Added
 - **Login System**: Login system added using google account or email and password.
