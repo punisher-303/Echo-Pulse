@@ -3,6 +3,8 @@
 ### Added
 - **Login System**: Login system added using google account or email and password.
 - **Database**: Database added for store user data like playlist settings and history they played.
+- **Lyric Romanized**: Now any kind lyrics ( all languages alphabets ) will be converted into English letters eg: സംഗീതം -> Sangeetham you can back it normal and turn on also default value is true.
+- **Canva Video cache**: Now canva video save temp and load fast not reload all the time it save cache and use it again the same song when you play after restart cache will clear make video faster without buffer.
 
 ### Changed
 - **App performance**: App performance improved.
