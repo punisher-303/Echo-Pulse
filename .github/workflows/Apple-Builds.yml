@@ -96,55 +96,63 @@ jobs:
             echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
             echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
 
-  ios_build:
-    name: iOS Build
-    runs-on: macos-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.35.4'
-          channel: 'stable'
-
-      - name: Clone Repository
-        run: git clone -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
-
-      - name: Install Dependencies
-        run: cd ECHOPULS && flutter pub get
-
-      - name: Extract version from pubspec.yaml
-        run: |
-          ver=$(grep -m1 -E '^version:\s*' ECHOPULS/pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
-          if [ -z "$ver" ]; then echo "version not found in pubspec.yaml"; exit 1; fi
-          echo "VERSION=$ver" >> $GITHUB_ENV
-      
-      - name: Set build number
-        run: echo "BUILDVERSION=2106" >> $GITHUB_ENV
-
-      - name: Build iOS (Unsigned)
-        run: |
-          cd ECHOPULS
-          flutter build ios --release --no-codesign --build-number ${{ env.BUILDVERSION }}
-
-      - name: Package iOS (IPA)
-        run: |
-          mkdir -p Payload
-          APP_DIR=$(find ECHOPULS/build/ios/iphoneos -name "*.app" | head -n 1)
-          cp -r "$APP_DIR" Payload/
-          zip -r echo_pulse_ios_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.ipa Payload
-
-      - name: Upload Artifacts (iOS)
-        uses: actions/upload-artifact@v4
-        with:
-          name: echo_pulse_ios
-          path: echo_pulse_ios_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.ipa
+#   ios_build:
+#     name: iOS Build
+#     runs-on: macos-latest
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
+# 
+#       - name: Setup Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: '3.35.4'
+#           channel: 'stable'
+# 
+#       - name: Clone Repository
+#         run: git clone -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
+# 
+#       - name: Install Dependencies
+#         run: cd ECHOPULS && flutter pub get
+# 
+#       - name: Extract version from pubspec.yaml
+#         run: |
+#           ver=$(grep -m1 -E '^version:\s*' ECHOPULS/pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
+#           if [ -z "$ver" ]; then echo "version not found in pubspec.yaml"; exit 1; fi
+#           echo "VERSION=$ver" >> $GITHUB_ENV
+#       
+#       - name: Set build number
+#         run: echo "BUILDVERSION=2106" >> $GITHUB_ENV
+# 
+#       - name: Build iOS (Unsigned)
+#         run: |
+#           cd ECHOPULS
+#           # Force iOS 13.0 deployment target to avoid plugin conflicts (OneSignal/Firebase)
+#           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 13.0/g' ios/Runner.xcodeproj/project.pbxproj
+#           
+#           flutter clean
+#           flutter pub get
+#           flutter build ios --release --no-codesign --build-number ${{ env.BUILDVERSION }}
+# 
+#       - name: Package iOS (IPA)
+#         run: |
+#           # Professional IPA packaging for Sideloadly/AltStore
+#           mkdir -p Payload
+#           APP_DIR=$(find ECHOPULS/build/ios/iphoneos -name "*.app" | head -n 1)
+#           cp -r "$APP_DIR" Payload/
+#           zip -vr echo_pulse_ios_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.ipa Payload
+# 
+#       - name: Upload Artifacts (iOS)
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: echo_pulse_ios
+#           path: echo_pulse_ios_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.ipa
 
   create_release:
     name: Create Release (Apple)
-    needs: [macos_build, ios_build]
+    # ios_build is currently disabled due to 7-day signing limitations for free accounts.
+    # To re-enable, uncomment the job above and add it back to the 'needs' array.
+    needs: [macos_build]
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifacts
@@ -156,7 +164,6 @@ jobs:
           artifacts: |
             echo_pulse_macos/*.dmg
             echo_pulse_macos/*.zip
-            echo_pulse_ios/*.ipa
           tag: v${{ needs.macos_build.outputs.version }}+2106
           token: ${{secrets.SECRET_KEY}}
           allowUpdates: true
