@@ -1,0 +1,164 @@
+name: "Apple Build & Release"
+
+on:
+  workflow_dispatch:
+    branches: main
+
+jobs:
+  macos_build:
+    name: macOS Build (Universal)
+    outputs:
+      version: ${{ steps.extract_version.outputs.version }}
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.4'
+          channel: 'stable'
+
+      - name: Clone Repository
+        run: git clone -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
+
+      - name: Install Dependencies
+        run: cd ECHOPULS && flutter pub get
+
+      - name: Extract version from pubspec.yaml
+        id: extract_version
+        run: |
+          ver=$(grep -m1 -E '^version:\s*' ECHOPULS/pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
+          if [ -z "$ver" ]; then echo "version not found in pubspec.yaml"; exit 1; fi
+          echo "VERSION=$ver" >> $GITHUB_ENV
+          echo "version=$ver" >> $GITHUB_OUTPUT
+      
+      - name: Set build number
+        run: echo "BUILDVERSION=2106" >> $GITHUB_ENV
+
+      - name: Configure macOS Entitlements
+        run: |
+          # Apply Hardened Runtime and Sandbox configurations for macOS compatibility.
+          for f in ECHOPULS/macos/Runner/DebugProfile.entitlements ECHOPULS/macos/Runner/Release.entitlements; do
+            /usr/libexec/PlistBuddy -c "Delete :com.apple.security.app-sandbox" "$f" 2>/dev/null || true
+            /usr/libexec/PlistBuddy -c "Add :com.apple.security.app-sandbox bool false" "$f"
+            /usr/libexec/PlistBuddy -c "Delete :com.apple.security.cs.allow-jit" "$f" 2>/dev/null || true
+            /usr/libexec/PlistBuddy -c "Add :com.apple.security.cs.allow-jit bool true" "$f"
+            /usr/libexec/PlistBuddy -c "Delete :com.apple.security.network.client" "$f" 2>/dev/null || true
+            /usr/libexec/PlistBuddy -c "Add :com.apple.security.network.client bool true" "$f"
+          done
+
+      - name: Build macOS (ARM64)
+        run: |
+          cd ECHOPULS
+          flutter build macos --release --build-number ${{ env.BUILDVERSION }}
+
+      - name: Package macOS (ARM64)
+        run: |
+          cd ECHOPULS/build/macos/Build/Products/Release
+          APP_PATH=$(ls -d *.app | head -n 1)
+          mv "$APP_PATH" "EchoPulse.app"
+          codesign --sign - --force --deep "EchoPulse.app"
+          mkdir -p dmg_temp
+          cp -R "EchoPulse.app" dmg_temp/
+          ln -s /Applications dmg_temp/Applications
+          hdiutil create -volname "EchoPulse" -srcfolder dmg_temp -ov -format UDZO ../../../../../echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+          zip -ry ../../../../../echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip "EchoPulse.app"
+
+      - name: Build macOS (Intel)
+        run: |
+          cd ECHOPULS
+          # Clean build to ensure fresh architecture
+          flutter clean
+          flutter pub get
+          arch -x86_64 flutter build macos --release --build-number ${{ env.BUILDVERSION }}
+
+      - name: Package macOS (Intel)
+        run: |
+          cd ECHOPULS/build/macos/Build/Products/Release
+          APP_PATH=$(ls -d *.app | head -n 1)
+          mv "$APP_PATH" "EchoPulse.app"
+          codesign --sign - --force --deep "EchoPulse.app"
+          mkdir -p dmg_temp
+          cp -R "EchoPulse.app" dmg_temp/
+          ln -s /Applications dmg_temp/Applications
+          hdiutil create -volname "EchoPulse" -srcfolder dmg_temp -ov -format UDZO ../../../../../echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+          zip -ry ../../../../../echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip "EchoPulse.app"
+
+      - name: Upload Artifacts (macOS)
+        uses: actions/upload-artifact@v4
+        with:
+          name: echo_pulse_macos
+          path: |
+            echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+            echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
+            echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+            echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
+
+  ios_build:
+    name: iOS Build
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.4'
+          channel: 'stable'
+
+      - name: Clone Repository
+        run: git clone -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
+
+      - name: Install Dependencies
+        run: cd ECHOPULS && flutter pub get
+
+      - name: Extract version from pubspec.yaml
+        run: |
+          ver=$(grep -m1 -E '^version:\s*' ECHOPULS/pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
+          if [ -z "$ver" ]; then echo "version not found in pubspec.yaml"; exit 1; fi
+          echo "VERSION=$ver" >> $GITHUB_ENV
+      
+      - name: Set build number
+        run: echo "BUILDVERSION=2106" >> $GITHUB_ENV
+
+      - name: Build iOS (Unsigned)
+        run: |
+          cd ECHOPULS
+          flutter build ios --release --no-codesign --build-number ${{ env.BUILDVERSION }}
+
+      - name: Package iOS (IPA)
+        run: |
+          mkdir -p Payload
+          APP_DIR=$(find ECHOPULS/build/ios/iphoneos -name "*.app" | head -n 1)
+          cp -r "$APP_DIR" Payload/
+          zip -r echo_pulse_ios_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.ipa Payload
+
+      - name: Upload Artifacts (iOS)
+        uses: actions/upload-artifact@v4
+        with:
+          name: echo_pulse_ios
+          path: echo_pulse_ios_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.ipa
+
+  create_release:
+    name: Create Release (Apple)
+    needs: [macos_build, ios_build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create / Update Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: |
+            echo_pulse_macos/*.dmg
+            echo_pulse_macos/*.zip
+            echo_pulse_ios/*.ipa
+          tag: v${{ needs.macos_build.outputs.version }}+2106
+          token: ${{secrets.SECRET_KEY}}
+          allowUpdates: true
+          omitBody: true
+          prerelease: true
