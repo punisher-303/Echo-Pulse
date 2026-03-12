@@ -1,3 +1,18 @@
+## [4.7.3] - 2026-03-12
+
+### Added
+- **Public Chat**: Now people can chat public chat can edit and delete message.
+- **Room Creation UI**: Room creation menu like like login screen similar ui.
+- **Lyric Romanized**: Now any kind lyrics ( all languages alphabets ) will be converted into English letters eg: സംഗീതം -> Sangeetham you can back it normal and turn on also default value is true.
+- **Canva Control**: You can control the canva video turn on and off in player screen .
+
+### Changed
+- **App performance**: App performance improved.
+- **Sync**: improve sync speed.
+
+### Fixed
+- **Canva video**: Canva video not playing issue fixed.
+
 ## [4.7.2] - 2026-03-10
 
 ### Added
