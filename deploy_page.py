@@ -19,7 +19,7 @@ import sys
 import os
 import signal
 import platform
-from datetime import datetime
+from datetime import datetime, timezone
 
 # ---------- CONFIG ----------
 BUILD_SOURCE = Path("ghpage")
@@ -236,7 +236,7 @@ def setup_worktree_from_head(repo_root: Path):
     global _temp_worktree, _temp_branch
     tmpdir = tempfile.mkdtemp(prefix="_ghpage_wt_", dir=str(repo_root))
     _temp_worktree = Path(tmpdir)
-    _temp_branch = f"{BRANCH}-tmp-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
+    _temp_branch = f"{BRANCH}-tmp-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
     log(f"ℹ️ Created worktree dir: {_temp_worktree}")
     # add worktree from HEAD (no fetch)
     run_stream(["git", "worktree", "add", str(_temp_worktree), "HEAD"], cwd=repo_root)
@@ -302,15 +302,30 @@ def commit_and_push(wt: Path):
     # run_stream(["git", "config", "user.name", "ghpage-deployer"], cwd=wt, check=False)
     # run_stream(["git", "config", "user.email", "ghpage-deployer@example.com"], cwd=wt, check=False)
     run_stream(["git", "add", "-A"], cwd=wt)
+    run_stream(["git", "config", "http.postBuffer", "52428800"], cwd=wt, check=False)
     status = subprocess.run(["git", "status", "--porcelain"], cwd=str(wt), capture_output=True, text=True)
     if status.stdout.strip() == "":
         cp = subprocess.run(["git", "rev-parse", "--verify", "HEAD"], cwd=str(wt), capture_output=True, text=True, check=False)
         if cp.returncode != 0:
             run_stream(["git", "add", "-A"], cwd=wt)
-            run_stream(["git", "commit", "-m", f"Deploy {datetime.utcnow().isoformat()}"], cwd=wt)
+            run_stream(["git", "commit", "-m", f"Deploy {datetime.now(timezone.utc).isoformat()}"], cwd=wt)
     else:
-        run_stream(["git", "commit", "-m", f"Deploy {datetime.utcnow().isoformat()}"], cwd=wt)
-    run_stream(["git", "push", "--force", REMOTE, f"HEAD:refs/heads/{BRANCH}"], cwd=wt)
+        run_stream(["git", "commit", "-m", f"Deploy {datetime.now(timezone.utc).isoformat()}"], cwd=wt)
+
+    # Push with retry logic
+    push_cmd = ["git", "push", "--force", REMOTE, f"HEAD:refs/heads/{BRANCH}"]
+    max_retries = 3
+    for attempt in range(1, max_retries + 1):
+        try:
+            run_stream(push_cmd, cwd=wt)
+            log(f"✅ Push successful on attempt {attempt}.")
+            break
+        except subprocess.CalledProcessError as e:
+            if attempt < max_retries:
+                log(f"⚠️ Push attempt {attempt} failed: {e}. Retrying...")
+                time.sleep(2)
+            else:
+                raise e
 
 def _signal_handler(sig, frame):
     log(f"\n⚠️ Caught signal {sig}. Attempting cleanup...")

@@ -35,7 +35,7 @@ jobs:
           echo "version=$ver" >> $GITHUB_OUTPUT
       
       - name: Set build number
-        run: echo "BUILDVERSION=2107" >> $GITHUB_ENV
+        run: echo "BUILDVERSION=2108" >> $GITHUB_ENV
 
       - name: Configure macOS Entitlements
         run: |
@@ -136,7 +136,7 @@ jobs:
 #           echo "VERSION=$ver" >> $GITHUB_ENV
 #       
 #       - name: Set build number
-#         run: echo "BUILDVERSION=2107" >> $GITHUB_ENV
+#         run: echo "BUILDVERSION=2108" >> $GITHUB_ENV
 # 
 #       - name: Build iOS (Unsigned)
 #         run: |
