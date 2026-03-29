@@ -6,7 +6,7 @@
     Hi, I’m Anand. I build open-source projects like EchoPulse out of a genuine love for software development. This app started as a personal experiment and grew into something much bigger—used and appreciated by people around the world. I’m always exploring new ideas, and I believe in sharing what I create freely, so others can learn, build, and enjoy too.
   </p>
   <div class="contact-buttons">
-  <a href="anandpm224@gmail.com" class="contact-btn email" aria-label="Email Anand" title="Email Anand">
+  <a href="mailto:anandpm224@gmail.com" class="contact-btn email" aria-label="Email Anand" title="Email Anand">
       <i class="fa-solid fa-envelope"></i>
       Email Me
     </a>
@@ -49,7 +49,7 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 500;
     font-style: normal;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: rgba(255, 237, 248, 0.949);
     margin-top: 0.1rem;
     margin-bottom: 1.5rem;
@@ -139,7 +139,7 @@
     }
 
     .about-subtitle {
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
 
     .contact-btn {

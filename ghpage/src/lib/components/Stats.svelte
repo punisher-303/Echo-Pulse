@@ -12,19 +12,19 @@
 	}
 </script>
 
-<!-- <div class="stats-container"> -->
+<div class="stats-container">
 	<!-- Support Us Button -->
-	<!-- <button class="support-btn" on:click={handleSupportClick}>
+	<button class="support-btn" on:click={handleSupportClick}>
 		<i class="fa-solid fa-hand-holding-dollar support-icon"></i>
 		<span class="support-text">Support Us</span>
-	</button> -->
+	</button>
 	
 	<!-- GitHub Button -->
-	<!-- <button class="github-btn" on:click={handleGithubClick}>
+	<button class="github-btn" on:click={handleGithubClick}>
 		<i class="fa-brands fa-github github-icon"></i>
 		<span class="github-text">GitHub</span>
-	</button> -->
-<!-- </div> -->
+	</button>
+</div>
 
 <style>
 	.stats-container { 

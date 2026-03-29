@@ -111,7 +111,7 @@
 	.custom-btn {
 		display: flex;
 		align-items: center;
-		justify-content: center; /* Centered content */
+		justify-content: flex-start;
 		gap: 1rem;
 		/* Use the same translucent panel styling as other sections to avoid a 'disabled' solid block look */
 		background: rgba(16, 11, 33, 0.15);
@@ -147,7 +147,7 @@
 	.button-info {
 		display: flex;
 		flex-direction: column;
-		text-align: center;
+		text-align: left;
 	}
 
 	.button-info span {

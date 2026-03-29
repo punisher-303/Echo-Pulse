@@ -1,0 +1,10 @@
+{
+    "repositories": [
+        {
+        "id": 1,
+        "name": "echo-pulse",
+        "url": "https://raw.githubusercontent.com/punisher-303/Echo-Pulse/main/update.json",
+        "install": true
+    }
+]
+}
