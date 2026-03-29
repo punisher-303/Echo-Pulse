@@ -1,13 +1,15 @@
 <script>
 	import Navbar from '$lib/components/Navbar.svelte';
-	import Hero from '$lib/components/Hero.svelte';
+	import HomeHero from '$lib/components/HomeHero.svelte';
 	import AppsGrid from '$lib/components/AppsGrid.svelte';
-	import FeaturesGrid from '$lib/components/FeaturesGrid.svelte';
-	import Screenshots from '$lib/components/Screenshots.svelte';
-	import Download from '$lib/components/Download.svelte';
 	import About from '$lib/components/About.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 </script>
+
+<svelte:head>
+	<title>Anand — Software Developer Portfolio</title>
+	<meta name="description" content="Portfolio of Anand, an independent software developer creating open source tools with Flutter, Dart, and Svelte." />
+</svelte:head>
 
 <div class="bg-c-bg text-c-t1 font-sans min-h-screen selection:bg-c-pk-l selection:text-c-pk-d overflow-x-hidden relative">
 	<!-- Background Petals -->
@@ -23,19 +25,10 @@
 	<Navbar />
 	
 	<main>
-		<Hero />
+		<HomeHero />
 		<div class="h-[1px] bg-c-b1"></div>
 		
 		<AppsGrid />
-		<div class="h-[1px] bg-c-b1 max-w-[1100px] mx-auto"></div>
-		
-		<FeaturesGrid />
-		<div class="h-[1px] bg-c-b1 max-w-[1100px] mx-auto"></div>
-		
-		<Screenshots />
-		<div class="h-[1px] bg-c-b1 max-w-[1100px] mx-auto"></div>
-		
-		<Download />
 		<div class="h-[1px] bg-c-b1 max-w-[1100px] mx-auto"></div>
 		
 		<About />

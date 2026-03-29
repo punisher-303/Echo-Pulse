@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+	import { base } from '$app/paths';
+	import RepoStats from '$lib/components/RepoStats.svelte';
 	
 	let mounted = false;
 	
@@ -51,7 +53,7 @@
 			
 			<!-- Echo Pulse card -->
 			<div class="rev d1" class:in={mounted}>
-				<a href="#download" class="h-full min-h-[430px] bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] overflow-hidden no-underline flex flex-col relative transition-all duration-[220ms] shadow-sh-1 hover:shadow-sh-3 hover:-translate-y-1 hover:border-c-pk-m group block">
+				<a href="{base}/echopulse" class="h-full min-h-[430px] bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] overflow-hidden no-underline flex flex-col relative transition-all duration-[220ms] shadow-sh-1 hover:shadow-sh-3 hover:-translate-y-1 hover:border-c-pk-m group block">
 					<div class="h-[3px] w-full transition-all duration-200 group-hover:h-[4px]" style="background:linear-gradient(90deg,#f8bfc9 0%,#e04f6a 50%,#f8bfc9 100%)"></div>
 					<div class="p-[26px] pb-[64px] flex-1">
 						<div class="flex items-start justify-between mb-[18px]">
@@ -64,16 +66,17 @@
 						<div class="font-serif text-[26px] font-normal tracking-[-0.035em] text-c-t1 mb-[3px] leading-[1.1]">Echo Pulse</div>
 						<div class="font-mono text-[9px] tracking-[0.07em] uppercase text-c-t3 mb-3">Music Player · Flutter App</div>
 						
-						<p class="font-sans text-[15px] text-c-t2 leading-[1.65] mb-[18px] mt-3">Advanced music player featuring seamless background playback, intelligent queue management, comprehensive codec support, and a responsive, beautiful interface.</p>
+						<p class="font-sans text-[15px] text-c-t2 leading-[1.65] mb-2 mt-3">Advanced music player featuring seamless background playback, intelligent queue management, and a responsive, beautiful interface.</p>
 						
-						<div class="flex flex-wrap gap-[5px]">
+						<RepoStats repo="punisher-303/Echo-Pulse" defaultStars="2.1k+" />
+
+						<div class="flex flex-wrap gap-[5px] mt-6">
 							<span class="font-mono text-[9px] tracking-[0.04em] text-c-t3 bg-c-bg border border-c-b1 px-[8px] py-[3px] rounded-[4px]">Flutter</span>
-							<span class="font-mono text-[9px] tracking-[0.04em] text-c-t3 bg-c-bg border border-c-b1 px-[8px] py-[3px] rounded-[4px]">Dart</span>
 							<span class="font-mono text-[9px] tracking-[0.04em] text-c-t3 bg-c-bg border border-c-b1 px-[8px] py-[3px] rounded-[4px]">Android</span>
 							<span class="font-mono text-[9px] tracking-[0.04em] text-c-t3 bg-c-bg border border-c-b1 px-[8px] py-[3px] rounded-[4px]">Windows</span>
 						</div>
 					</div>
-					<span class="absolute bottom-6 right-6 text-[16px] text-c-t4 transition-all duration-[180ms] group-hover:text-c-pk group-hover:translate-x-[3px] group-hover:-translate-y-[3px]">↗</span>
+					<span class="absolute bottom-6 right-6 text-[14px] text-c-t4 font-sans font-medium transition-all duration-[180ms] group-hover:text-c-pk group-hover:translate-x-[3px] group-hover:-translate-y-[3px]">Try Echo Pulse ↗</span>
 				</a>
 			</div>
             
