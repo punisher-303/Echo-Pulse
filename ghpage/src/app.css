@@ -1,45 +1,80 @@
-/* Tailwind (optional, currently unused) */
 @import 'tailwindcss';
 
-:root {
-	--bg-color-deep: #0a0613;
-	--bg-color-mid: #140b21;
-	--text-primary: #ffffff;
-	--text-secondary: #c3b8d9;
-	--accent-color: #a754f8;
-	--accent-gradient: linear-gradient(45deg, #b86ffc, #8e66ff);
-	--glass-bg: rgba(255, 255, 255, 0.05);
-	--glass-border: rgba(255, 255, 255, 0.15);
+@theme {
+  --color-c-bg: #faf8f4;
+  --color-c-t1: #1a1510;
+  --color-c-t2: #594a3d;
+  --color-c-t3: #8c7b6c;
+  --color-c-t4: #b3a497;
+  --color-c-b1: #e8e2d6;
+  --color-c-b2: #d6cfc1;
+  --color-c-b3: #c2baab;
+  --color-c-s1: #ffffff;
+  --color-c-s2: #f2ebd9;
+  --color-c-s3: #eae2cc;
+  --color-c-pk: #e04f6a;
+  --color-c-pk-l: #fdf2f4;
+  --color-c-pk-m: #f9d8df;
+  --color-c-pk-d: #a82e44;
+  --color-c-gn: #43a36f;
+  --color-c-gn-l: #f0fdf4;
+  --color-c-gd-l: #fdf5e6;
+  
+  --shadow-sh-1: 0 2px 8px rgba(0, 0, 0, 0.03);
+  --shadow-sh-2: 0 4px 16px rgba(0, 0, 0, 0.05);
+  --shadow-sh-3: 0 8px 24px rgba(0, 0, 0, 0.07);
+  --shadow-sh-md: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 6px 20px rgba(0, 0, 0, 0.05);
+
+  --font-serif: 'Fraunces', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-html, body, #svelte { height: 100%; }
-
-/* Prevent page scroll; sections handle wheel/swipe themselves */
-html, body { overflow: hidden; overscroll-behavior: none; }
-
-/* Avoid accidental horizontal scrollbars anywhere */
-* { scrollbar-width: thin; }
-body { overflow-x: hidden; }
-
-/* Mobile-specific improvements */
-@media (max-width: 992px) {
-  html, body { 
-    overflow: hidden; 
-    height: 100vh;
-    position: fixed;
-    width: 100%;
-  }
-  
-  #svelte {
-    height: 100vh;
-    overflow: hidden;
-  }
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-	font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
-	background-color: var(--bg-color-deep);
-	color: var(--text-primary);
+    background-color: var(--color-c-bg);
+    color: var(--color-c-t1);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+}
+
+/* Hide scrollbar for sub-nav */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Base petal animation */
+@keyframes fall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    80% { opacity: 0.6; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+.petals {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.petal {
+    position: absolute;
+    top: -20px;
+    border-radius: 15px 0 15px 0;
+    animation-name: fall;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    opacity: 0.6;
 }
