@@ -28,7 +28,7 @@
 			<a href="{base}/#apps" class="font-sans text-[12px] text-c-t3 no-underline hover:text-c-t2 transition-colors">Apps</a>
 			<a href="{base}/echopulse#features" class="font-sans text-[12px] text-c-t3 no-underline hover:text-c-t2 transition-colors">Features</a>
 			<a href="{base}/#about" class="font-sans text-[12px] text-c-t3 no-underline hover:text-c-t2 transition-colors">About</a>
-			<a href="https://github.com/punisher-303/ECHOPULS" target="_blank" rel="noopener noreferrer" class="font-sans text-[12px] text-c-t3 no-underline hover:text-c-t2 transition-colors">GitHub</a>
+			<a href="https://github.com/punisher-303/Echo-Pulse" target="_blank" rel="noopener noreferrer" class="font-sans text-[12px] text-c-t3 no-underline hover:text-c-t2 transition-colors">GitHub</a>
 		</div>
 	</footer>
 </div>
