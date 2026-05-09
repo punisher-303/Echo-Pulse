@@ -1,14 +1,27 @@
 <script>
+	import { base } from '$app/paths';
 	import Navbar from '$lib/components/Navbar.svelte';
-	import HomeHero from '$lib/components/HomeHero.svelte';
-	import AppsGrid from '$lib/components/AppsGrid.svelte';
-	import About from '$lib/components/About.svelte';
+	import SubNav from '$lib/components/SubNav.svelte';
+	import OfficialWarning from '$lib/components/OfficialWarning.svelte';
+	import Hero from '$lib/components/Hero.svelte';
+	import InteractivePlayer from '$lib/components/InteractivePlayer.svelte';
+	import LiveStats from '$lib/components/LiveStats.svelte';
+	import DownloadCounter from '$lib/components/DownloadCounter.svelte';
+	import RecognitionRow from '$lib/components/RecognitionRow.svelte';
+	import FeaturesGrid from '$lib/components/FeaturesGrid.svelte';
+	import SpotifyCanvaShowcase from '$lib/components/SpotifyCanvaShowcase.svelte';
+	import Screenshots from '$lib/components/Screenshots.svelte';
+	import ReleaseFetcher from '$lib/components/ReleaseFetcher.svelte';
+	import Download from '$lib/components/Download.svelte';
+	import Support from '$lib/components/Support.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+
+	let repo = "punisher-303/Echo-Pulse";
 </script>
 
 <svelte:head>
-	<title>Anand — Software Developer Portfolio</title>
-	<meta name="description" content="Portfolio of Anand, an independent software developer creating open source tools with Flutter, Dart, and Svelte." />
+	<title>Echo Pulse — Music that resonates.</title>
+	<meta name="description" content="A modern music streaming experience. Open source, beautifully crafted, and free from distractions." />
 </svelte:head>
 
 <div class="bg-c-bg text-c-t1 font-sans min-h-screen selection:bg-c-pk-l selection:text-c-pk-d overflow-x-hidden relative">
@@ -25,13 +38,66 @@
 	<Navbar />
 	
 	<main>
-		<HomeHero />
-		<div class="h-[1px] bg-c-b1"></div>
+		<SubNav active="overview" />
+		<OfficialWarning repo={repo} />
+
+		<div id="overview" class="pb-10 relative">
+			<Hero />
+			
+			<!-- Interactive Media Player Live Showcase -->
+			<div class="max-w-[1040px] mx-auto px-5 mb-24 z-20 relative">
+				<InteractivePlayer />
+			</div>
+
+			<!-- Integrated Counters and Stats -->
+			<div class="flex flex-col items-center gap-6 mt-[-40px] mb-20 px-5 z-20 relative">
+				<DownloadCounter repo={repo} />
+				<LiveStats repo={repo} fallbackVersion="v4.7.6" fallbackStars="2.1k+" fallbackForks="340" />
+			</div>
+		</div>
+
+		<RecognitionRow repo={repo} stars="2.1k+" />
 		
-		<AppsGrid />
-		<div class="h-[1px] bg-c-b1 max-w-[1100px] mx-auto"></div>
+		<div id="features" class="scroll-mt-[160px]">
+			<FeaturesGrid />
+		</div>
+
+		<div class="h-[1px] bg-c-b1 max-w-[1040px] mx-auto"></div>
+
+		<SpotifyCanvaShowcase />
 		
-		<About />
+		<section id="screenshots" class="scroll-mt-[100px]">
+			<Screenshots />
+		</section>
+
+		<div class="h-[1px] bg-c-b1 max-w-[1040px] mx-auto"></div>
+
+		<section id="releases" class="py-[84px] px-5 md:px-8 max-w-[1040px] mx-auto scroll-mt-[100px]">
+			<div class="flex items-center justify-between mb-9">
+				<div class="flex items-center gap-2.5 font-mono text-[10px] tracking-[0.18em] uppercase text-c-t3">
+					<div class="w-[14px] h-[2px] bg-c-pk rounded-sm"></div>
+					Releases
+				</div>
+				<a href="https://github.com/{repo}/releases" target="_blank" rel="noopener noreferrer" class="font-mono text-[10px] tracking-[0.06em] text-c-t3 no-underline hover:text-c-t2 transition-colors">All releases →</a>
+			</div>
+			<h2 class="font-serif text-[clamp(28px,4vw,44px)] font-light tracking-[-0.035em] leading-[1.05] text-c-t1 mb-3.5">
+				What's new in <em class="italic text-c-pk">Echo Pulse.</em>
+			</h2>
+			<p class="font-sans text-[14px] text-c-t2 leading-[1.78] max-w-[440px] mb-10">
+				Actively maintained. Latest stable version shown below, fetched live from GitHub.
+			</p>
+			<ReleaseFetcher repo={repo} />
+		</section>
+
+		<div class="h-[1px] bg-c-b1 max-w-[1040px] mx-auto"></div>
+
+		<div id="download" class="scroll-mt-[100px]">
+			<Download />
+		</div>
+
+		<div id="about" class="scroll-mt-[100px]">
+			<Support repoUrl="https://github.com/punisher-303/Echo-Pulse" githubUrl="https://github.com/punisher-303" />
+		</div>
 	</main>
 	
 	<Footer />
