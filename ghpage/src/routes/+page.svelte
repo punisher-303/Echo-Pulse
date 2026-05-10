@@ -5,8 +5,7 @@
 	import OfficialWarning from '$lib/components/OfficialWarning.svelte';
 	import Hero from '$lib/components/Hero.svelte';
 	import InteractivePlayer from '$lib/components/InteractivePlayer.svelte';
-	import LiveStats from '$lib/components/LiveStats.svelte';
-	import DownloadCounter from '$lib/components/DownloadCounter.svelte';
+	import MetricsDashboard from '$lib/components/MetricsDashboard.svelte';
 	import RecognitionRow from '$lib/components/RecognitionRow.svelte';
 	import FeaturesGrid from '$lib/components/FeaturesGrid.svelte';
 	import SpotifyCanvaShowcase from '$lib/components/SpotifyCanvaShowcase.svelte';
@@ -41,18 +40,17 @@
 		<SubNav active="overview" />
 		<OfficialWarning repo={repo} />
 
-		<div id="overview" class="pb-10 relative">
+		<div id="overview" class="pb-6 relative">
 			<Hero />
 			
 			<!-- Interactive Media Player Live Showcase -->
-			<div class="max-w-[1040px] mx-auto px-5 mb-24 z-20 relative">
+			<div class="max-w-[1040px] mx-auto px-5 mb-12 z-20 relative">
 				<InteractivePlayer />
 			</div>
 
-			<!-- Integrated Counters and Stats -->
-			<div class="flex flex-col items-center gap-6 mt-[-40px] mb-20 px-5 z-20 relative">
-				<DownloadCounter repo={repo} />
-				<LiveStats repo={repo} fallbackVersion="v4.7.6" fallbackStars="2.1k+" fallbackForks="340" />
+			<!-- Integrated Counters and Stats Dashboard -->
+			<div class="max-w-[1040px] mx-auto px-5 mb-14 z-20 relative">
+				<MetricsDashboard repo={repo} fallbackVersion="v4.7.6" fallbackStars="2.1k+" fallbackForks="340" />
 			</div>
 		</div>
 

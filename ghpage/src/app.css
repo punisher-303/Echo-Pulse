@@ -78,3 +78,89 @@ body {
     animation-timing-function: linear;
     opacity: 0.6;
 }
+
+/* ==========================================================================
+   PREMIUM HARDWARE-ACCELERATED 3D POPUP & FLOATING UTILITIES
+   ========================================================================== */
+
+/* Establish perspective container */
+.perspective-3d {
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+/* 3D Float Keyframes */
+@keyframes float3D-slow {
+    0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+    33% { transform: translateY(-8px) rotateX(2deg) rotateY(-1deg); }
+    66% { transform: translateY(-3px) rotateX(-1deg) rotateY(1.5deg); }
+    100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+}
+
+@keyframes float3D-medium {
+    0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+    50% { transform: translateY(-11px) rotateX(-2deg) rotateY(2deg) rotateZ(0.5deg); }
+    100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+}
+
+@keyframes float3D-fast {
+    0% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-6px) scale(1.02); }
+    100% { transform: translateY(0px) scale(1); }
+}
+
+/* 3D float utility triggers */
+.float-3d-slow {
+    animation: float3D-slow 8s ease-in-out infinite;
+}
+
+.float-3d-medium {
+    animation: float3D-medium 5.5s ease-in-out infinite;
+}
+
+.float-3d-fast {
+    animation: float3D-fast 3.5s ease-in-out infinite;
+}
+
+/* Standard 3D perspective popups on hover */
+.hover-3d-card {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.hover-3d-card:hover {
+    transform: translateY(-8px) rotateX(5deg) rotateY(-3deg);
+    box-shadow: 
+        0 40px 80px -15px rgba(0, 0, 0, 0.65), 
+        0 15px 35px -5px rgba(224, 79, 106, 0.18);
+    border-color: rgba(224, 79, 106, 0.3) !important;
+}
+
+/* Highly pronounced hover 3D card for prominent widgets (Interactive Player, Showcase tabs, etc.) */
+.hover-3d-widget {
+    transform-style: preserve-3d;
+    perspective: 1200px;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.hover-3d-widget:hover {
+    transform: translateY(-12px) rotateX(4deg) rotateY(-2deg);
+    box-shadow: 
+        0 50px 100px -20px rgba(0, 0, 0, 0.8), 
+        0 20px 45px -10px rgba(224, 79, 106, 0.25);
+    border-color: rgba(224, 79, 106, 0.4) !important;
+}
+
+/* Layered 3D child translations */
+.layer-3d-front {
+    transform: translateZ(30px);
+}
+
+.layer-3d-deep {
+    transform: translateZ(55px);
+}
+
+.layer-3d-back {
+    transform: translateZ(-15px);
+}

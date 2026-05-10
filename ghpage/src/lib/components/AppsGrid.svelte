@@ -49,11 +49,11 @@
 			A modern music streaming experience. Open source, beautifully crafted, and free from distractions.
 		</p>
 		
-		<div class="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(500px,1fr))] gap-5 items-stretch">
+		<div class="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(500px,1fr))] gap-5 items-stretch perspective-3d">
 			
 			<!-- Echo Pulse card -->
 			<div class="rev d1" class:in={mounted}>
-				<a href="{base}/echopulse" class="h-full min-h-[430px] bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] overflow-hidden no-underline flex flex-col relative transition-all duration-[220ms] shadow-sh-1 hover:shadow-sh-3 hover:-translate-y-1 hover:border-c-pk-m group block">
+				<a href="{base}/echopulse" class="h-full min-h-[430px] bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] overflow-hidden no-underline flex flex-col relative hover-3d-widget group block">
 					<div class="h-[3px] w-full transition-all duration-200 group-hover:h-[4px]" style="background:linear-gradient(90deg,#f8bfc9 0%,#e04f6a 50%,#f8bfc9 100%)"></div>
 					<div class="p-[26px] pb-[64px] flex-1">
 						<div class="flex items-start justify-between mb-[18px]">
@@ -63,10 +63,10 @@
 							<span class="font-mono text-[9px] tracking-[0.1em] uppercase px-[9px] py-[3px] rounded-[5px] h-fit whitespace-nowrap text-c-gn bg-c-gn-l border border-[#a8dac0]">Live</span>
 						</div>
 						
-						<div class="font-serif text-[26px] font-normal tracking-[-0.035em] text-c-t1 mb-[3px] leading-[1.1]">Echo Pulse</div>
-						<div class="font-mono text-[9px] tracking-[0.07em] uppercase text-c-t3 mb-3">Music Player · Flutter App</div>
+						<div class="font-serif text-[26px] font-normal tracking-[-0.035em] text-c-t1 mb-[3px] leading-[1.1] layer-3d-front">Echo Pulse</div>
+						<div class="font-mono text-[9px] tracking-[0.07em] uppercase text-c-t3 mb-3 layer-3d-front">Music Player · Flutter App</div>
 						
-						<p class="font-sans text-[15px] text-c-t2 leading-[1.65] mb-2 mt-3">Advanced music player featuring seamless background playback, intelligent queue management, and a responsive, beautiful interface.</p>
+						<p class="font-sans text-[15px] text-c-t2 leading-[1.65] mb-2 mt-3 layer-3d-front">Advanced music player featuring seamless background playback, intelligent queue management, and a responsive, beautiful interface.</p>
 						
 						<RepoStats repo="punisher-303/Echo-Pulse" defaultStars="2.1k+" />
 
@@ -76,13 +76,13 @@
 							<span class="font-mono text-[9px] tracking-[0.04em] text-c-t3 bg-c-bg border border-c-b1 px-[8px] py-[3px] rounded-[4px]">Windows</span>
 						</div>
 					</div>
-					<span class="absolute bottom-6 right-6 text-[14px] text-c-t4 font-sans font-medium transition-all duration-[180ms] group-hover:text-c-pk group-hover:translate-x-[3px] group-hover:-translate-y-[3px]">Try Echo Pulse ↗</span>
+					<span class="absolute bottom-6 right-6 text-[14px] text-c-t4 font-sans font-medium transition-all duration-[180ms] group-hover:text-c-pk group-hover:translate-x-[3px] group-hover:-translate-y-[3px] layer-3d-deep">Try Echo Pulse ↗</span>
 				</a>
 			</div>
             
             <!-- Future Projects card -->
 			<div class="rev d2" class:in={mounted}>
-				<div class="h-full min-h-[430px] bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] overflow-hidden no-underline flex flex-col relative opacity-60">
+				<div class="h-full min-h-[430px] bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] overflow-hidden no-underline flex flex-col relative opacity-60 hover-3d-widget">
 					<div class="h-[3px] w-full bg-c-b1"></div>
 					<div class="p-[26px] pb-[64px] flex-1">
 						<div class="flex items-start justify-between mb-[18px]">

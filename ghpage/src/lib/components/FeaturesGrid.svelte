@@ -79,7 +79,7 @@
 
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
 		{#each features as feature}
-			<div class="bg-c-s1 border-c-b1 border-[1.5px] rounded-[13px] p-4 flex gap-3 items-start transition-all duration-150 hover:border-c-pk-m group">
+			<div class="bg-c-s1 border-c-b1 border-[1.5px] rounded-[13px] p-4 flex gap-3 items-start hover-3d-card group">
 				<!-- Icon container with real vector icons, no emojis -->
 				<div class="w-[34px] h-[34px] rounded-[9px] flex items-center justify-center shrink-0 mt-[1px] bg-c-pk-l/30 text-c-pk group-hover:scale-105 transition-transform duration-200">
 					{#if feature.id === 'ads'}

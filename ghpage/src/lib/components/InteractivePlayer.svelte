@@ -2,54 +2,63 @@
 	import { onMount, onDestroy } from 'svelte';
 
 	// Svelte 5 Runes for premium reactive state
-	let playing = $state(true);
-	let currentTime = $state(2);
+	let playing = $state(false); // Start paused so it respects browser autoplay policies
+	let currentTime = $state(0);
 	let currentSongIndex = $state(0);
 	let volume = $state(75);
 	let showDiscordRpc = $state(true);
 	let isMuted = $state(false);
+	let videoEl = $state(null);
+	let audioEl = $state(null);
+	let shuffleActive = $state(false);
+	let repeatActive = $state(false);
 
 	const songs = [
 		{
-			title: "Resonance of Pulse",
-			artist: "Echo Pulse Core",
-			source: "YouTube Music Stream",
+			title: "Malare (Premam)",
+			artist: "Vijay Yesudas",
+			source: "Apple CDN Stream",
 			sourceType: "hls",
-			duration: 24,
-			cover: "🌸",
+			duration: 30,
+			canvasUrl: "https://canvaz.scdn.co/upload/licensor/5bSw7fRotCnRCcO9br14W5/video/32b57cbf354b453a95eee32bb04d4e42.cnvs.mp4",
+			audioUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/41/59/b4/4159b41b-708b-8140-d758-e8da1ed7bedd/mzaf_7080443034849106781.plus.aac.p.m4a",
 			lyrics: [
-				{ time: 0, native: "സംഗീതം ഹൃദയത്തിൽ", roman: "Sangeetham hridayathil", eng: "Music is inside the heart" },
-				{ time: 6, native: "ഓരോ സ്പന്ദനവും", roman: "Oro spandhanavum", eng: "Every single heartbeat" },
-				{ time: 12, native: "നമ്മെ ഒന്നാക്കുന്നു", roman: "Namme onnaakkunnu", eng: "Brings us closer together" },
-				{ time: 18, native: "ഈണം തുടരുന്നു", roman: "Eenam thudarnnu", eng: "And the melody continues" }
+				{ time: 0, native: "മലരേ നിന്നെ കാണാതിരുന്നാൽ", roman: "Malare ninne kaanaathirunnal", eng: "My flower, if I do not see you..." },
+				{ time: 6, native: "മിഴികൾ പൂട്ടി മനസ്സിൻ താളിൽ", roman: "Mizhikal pootti manassin thaalil", eng: "With eyes closed on the pages of my heart..." },
+				{ time: 13, native: "ഒരു പ്രേമലേഖനം എഴുതി വച്ചൂ", roman: "Oru premalekhanam ezhuthi vachoo", eng: "I have written a sweet love letter..." },
+				{ time: 20, native: "നീയൊരു പൂവായി വിരിയുമെങ്കിൽ", roman: "Neeyoru poovaayi viriyumengil", eng: "If only you would bloom like a beautiful flower..." }
 			]
 		},
 		{
-			title: "Midnight Scrobble",
-			artist: "The Last FM Scrobbler",
-			source: "Offline Library Cache",
-			sourceType: "offline",
-			duration: 20,
-			cover: "📊",
+			title: "Darshana (Hridayam)",
+			artist: "Hesham Abdul Wahab",
+			source: "Apple CDN Stream",
+			sourceType: "hls",
+			duration: 30,
+			// High-performance abstract neon flow loop (Mixkit AWS CloudFront CDN) for absolute uptime
+			canvasUrl: "https://assets.mixkit.co/videos/preview/mixkit-abstract-glowing-wave-lines-41908-large.mp4",
+			audioUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/b6/55/65/b6556556-7aa0-de01-d33b-b0a58b16b4ea/mzaf_7770297109763908884.plus.aac.p.m4a",
 			lyrics: [
-				{ time: 0, native: "ഇരുട്ടിൽ പാടാം", roman: "Iruttil paadam", eng: "Let's sing in the quiet dark" },
-				{ time: 5, native: "വരികൾ തെളിയുന്നു", roman: "Varikal theliyunnu", eng: "The lyrics appear perfectly" },
-				{ time: 10, native: "കണക്റ്റ് ചെയ്യുമ്പോൾ", roman: "Connect cheyyumpol", eng: "Once connection is restored" },
-				{ time: 15, native: "സ്ക്രോബിൾ ചെയ്യപ്പെടും", roman: "Scrobble cheyyappedum", eng: "Your listening history scrobbles" }
+				{ time: 0, native: "ദർശനാ സരിഗമപധനി", roman: "Darshana... Sarigamapadhani...", eng: "Darshana... (singing the musical notes scale)" },
+				{ time: 6, native: "നിൻ നോക്കിൽ മിന്നൽ തിളക്കം", roman: "Nin nokkil minnal thilakkam", eng: "There is a spark of lightning in your eyes..." },
+				{ time: 13, native: "എൻ നെഞ്ചിൽ അനുരാഗ രാഗം", roman: "En nenchil anuraaga raagam", eng: "A melody of deep love in my heart..." },
+				{ time: 21, native: "എന്നെന്നും നീയെൻ പ്രിയതമ", roman: "Ennennum neeyen priyathama", eng: "You will always be my beloved..." }
 			]
 		},
 		{
-			title: "Together (Live Room)",
-			artist: "Echo Room Jam",
-			source: "Live Sync Room",
-			sourceType: "room",
-			duration: 28,
-			cover: "👥",
+			title: "Jimikki Kammal",
+			artist: "Vineeth Sreenivasan",
+			source: "Apple CDN Stream",
+			sourceType: "hls",
+			duration: 30,
+			// Beautiful active particle star loop (Mixkit AWS CloudFront CDN) for absolute uptime
+			canvasUrl: "https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-background-1611-large.mp4",
+			audioUrl: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/38/98/29/389829ae-8b46-4641-b333-f2f0930ad1fa/mzaf_16566485780048582185.plus.aac.p.m4a",
 			lyrics: [
-				{ time: 0, native: "കൂട്ടുകാർ ഒപ്പം", roman: "Koottukaar oppam", eng: "Our friends are all here" },
-				{ time: 7, native: "ഒരേ താളത്തിൽ", roman: "Ore thaalathil", eng: "Vibing in perfect synchrony" },
-				{ time: 14, native: "ചാറ്റ് ചെയ്യാം നമുക്ക്", roman: "Chat cheyyaam namukku", eng: "Chat live while listening" },
-				{ time: 21, native: "സംഗീത വിരുന്ന്", roman: "Sangeetha virunnu", eng: "An absolute musical feast" }
+				{ time: 0, native: "എന്റമ്മേടെ ജിമിക്കി കമ്മൽ", roman: "Entammede jimikki kammal", eng: "My mother's golden jimikki earring..." },
+				{ time: 7, native: "എന്റപ്പൻ കട്ടോണ്ട് പോയി", roman: "Entappan kattondu poyi", eng: "My father stole it and ran away..." },
+				{ time: 14, native: "എന്റമ്മേടെ ജിമിക്കി കമ്മൽ", roman: "Entammede jimikki kammal", eng: "My mother's golden jimikki earring..." },
+				{ time: 21, native: "എന്റപ്പൻ കട്ടോണ്ട് പോയി", roman: "Entappan kattondu poyi", eng: "My father stole it and ran away..." }
 			]
 		}
 	];
@@ -66,41 +75,110 @@
 		return index;
 	});
 
-	let interval;
-	
-	function startTimer() {
-		clearInterval(interval);
-		interval = setInterval(() => {
-			if (playing) {
-				if (currentTime >= currentSong.duration) {
-					currentTime = 0;
-				} else {
-					currentTime += 1;
-				}
-			}
-		}, 1000);
-	}
+	let volumePercent = $derived(isMuted ? 0 : volume / 100);
 
 	onMount(() => {
-		startTimer();
+		if (videoEl && playing) {
+			videoEl.play().catch(() => {});
+		}
+		if (audioEl && playing) {
+			audioEl.play().catch(() => {});
+		}
 	});
 
-	onDestroy(() => {
-		clearInterval(interval);
-	});
-
-	// Trigger restart of timer cycle when song changes
+	// Trigger restart when song changes
 	$effect(() => {
-		// This runs whenever currentSongIndex changes
+		// Watch currentSongIndex
 		currentTime = 0;
+		if (audioEl) {
+			audioEl.load();
+			if (playing) {
+				audioEl.play().catch(() => {});
+			}
+		}
+		if (videoEl) {
+			videoEl.load();
+			if (playing) {
+				videoEl.play().catch(() => {});
+			}
+		}
 	});
+
+	// Control play/pause states dynamically
+	$effect(() => {
+		if (audioEl) {
+			if (playing) {
+				audioEl.play().catch(() => {});
+			} else {
+				audioEl.pause();
+			}
+		}
+		if (videoEl) {
+			if (playing) {
+				videoEl.play().catch(() => {});
+			} else {
+				videoEl.pause();
+			}
+		}
+	});
+
+	// Sync volume to audio element
+	$effect(() => {
+		if (audioEl) {
+			audioEl.volume = volumePercent;
+		}
+	});
+
+	// Automatic lyrics centering scroll action
+	let lyricElements = [];
+	function registerLyricEl(node, idx) {
+		lyricElements[idx] = node;
+		return {
+			destroy() {
+				lyricElements[idx] = null;
+			}
+		};
+	}
+
+	$effect(() => {
+		// Watch activeLyricIndex and scroll container automatically
+		const activeEl = lyricElements[activeLyricIndex];
+		if (activeEl) {
+			activeEl.scrollIntoView({
+				behavior: 'smooth',
+				block: 'nearest'
+			});
+		}
+	});
+
+	function handleVideoError() {
+		console.warn("Spotify Canvas loop failed to load. Applying stable fallback stream.");
+		if (videoEl) {
+			const fallbackUrl = "https://canvaz.scdn.co/upload/licensor/5bSw7fRotCnRCcO9br14W5/video/32b57cbf354b453a95eee32bb04d4e42.cnvs.mp4";
+			if (videoEl.src !== fallbackUrl) {
+				videoEl.src = fallbackUrl;
+				videoEl.load();
+				if (playing) {
+					videoEl.play().catch(() => {});
+				}
+			}
+		}
+	}
 
 	function togglePlay() {
 		playing = !playing;
 	}
 
 	function nextSong() {
-		currentSongIndex = (currentSongIndex + 1) % songs.length;
+		if (shuffleActive) {
+			let nextIndex;
+			do {
+				nextIndex = Math.floor(Math.random() * songs.length);
+			} while (nextIndex === currentSongIndex && songs.length > 1);
+			currentSongIndex = nextIndex;
+		} else {
+			currentSongIndex = (currentSongIndex + 1) % songs.length;
+		}
 	}
 
 	function prevSong() {
@@ -112,7 +190,17 @@
 		const clickX = e.clientX - rect.left;
 		const width = rect.width;
 		const percentage = clickX / width;
-		currentTime = Math.floor(percentage * currentSong.duration);
+		seekToTime(Math.floor(percentage * currentSong.duration));
+	}
+
+	function seekToTime(time) {
+		currentTime = time;
+		if (audioEl) {
+			audioEl.currentTime = time;
+		}
+		if (videoEl) {
+			videoEl.currentTime = time;
+		}
 	}
 
 	function formatTime(sec) {
@@ -126,271 +214,719 @@
 	}
 </script>
 
-<div class="interactive-player-card w-full max-w-[780px] mx-auto rounded-[24px] overflow-hidden border border-neutral-800 bg-neutral-950/80 backdrop-blur-2xl shadow-[0_24px_60px_-15px_rgba(224,79,106,0.18)] p-6 md:p-8 flex flex-col md:flex-row gap-6 items-stretch text-neutral-200 select-none z-10 relative">
-	<!-- Ambient Background Glow Inside the Card -->
-	<div class="absolute -top-[40%] -left-[20%] w-[80%] h-[80%] bg-[radial-gradient(circle,rgba(224,79,106,0.14)_0%,transparent_60%)] pointer-events-none z-0 animate-pulse" style="animation-duration: 8s"></div>
-	<div class="absolute -bottom-[40%] -right-[20%] w-[80%] h-[80%] bg-[radial-gradient(circle,rgba(67,163,111,0.06)_0%,transparent_60%)] pointer-events-none z-0 animate-pulse" style="animation-duration: 12s"></div>
+<!-- HTML5 Audio Element mapping direct song previews -->
+<!-- svelte-ignore a11y_media_has_caption -->
+<audio 
+	bind:this={audioEl}
+	src={currentSong.audioUrl}
+	bind:currentTime={currentTime}
+	bind:muted={isMuted}
+	onended={nextSong}
+></audio>
 
-	<!-- Left Deck: Player Controls, Cover, Info -->
-	<div class="flex flex-col flex-1 z-10 relative justify-between">
-		
-		<!-- Source Badge -->
-		<div class="flex items-center justify-between mb-4">
-			<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-800 bg-neutral-900/60 font-mono text-[10px] uppercase tracking-wider text-neutral-400">
-				{#if currentSong.sourceType === 'hls'}
-					<span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
-					<span class="w-1.5 h-1.5 rounded-full bg-red-500 absolute"></span>
-				{:else if currentSong.sourceType === 'offline'}
-					<span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-				{:else}
-					<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
-				{/if}
-				{currentSong.source}
-			</div>
-			<div class="font-mono text-[9px] text-neutral-500">MOCK PLAYER</div>
-		</div>
+<!-- IMMERSIVE PREMIUM LIGHT CURVY IOS GLASSMORPHIC CONTAINER BOX -->
+<div class="interactive-player-card hover-3d-widget w-full max-w-[940px] mx-auto rounded-[36px] overflow-hidden border border-white/70 bg-white/45 backdrop-blur-[24px] shadow-[0_32px_70px_-12px_rgba(224,79,106,0.12),inset_0_1px_1px_rgba(255,255,255,0.7)] p-5 md:p-7 flex flex-col md:flex-row gap-7 items-stretch text-[#1c1c1e] select-none z-10 relative">
+	
+	<!-- Premium light background grid element inside card -->
+	<div class="absolute inset-0 bg-grid-slate-100/40 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none z-0"></div>
+	
+	<!-- Ambient Background Glow Inside the Card (Subtle high-end translucent lights) -->
+	<div class="absolute -top-[45%] -left-[20%] w-[85%] h-[85%] bg-[radial-gradient(circle,rgba(224,79,106,0.08)_0%,transparent_60%)] pointer-events-none z-0 animate-pulse" style="animation-duration: 8s"></div>
+	<div class="absolute -bottom-[45%] -right-[20%] w-[85%] h-[85%] bg-[radial-gradient(circle,rgba(67,163,111,0.04)_0%,transparent_60%)] pointer-events-none z-0 animate-pulse" style="animation-duration: 12s"></div>
 
-		<!-- Album Cover Art & Info Row -->
-		<div class="flex items-center gap-4.5 mb-6">
-			<!-- Album Art with 3D shadow and glow -->
-			<div class="w-[74px] h-[74px] rounded-[16px] flex items-center justify-center bg-gradient-to-tr border border-neutral-700/40 shadow-[0_8px_20px_rgba(0,0,0,0.5)] transform hover:scale-[1.03] transition-transform duration-300 relative group overflow-hidden shrink-0"
-				class:from-rose-500={currentSongIndex === 0}
-				class:to-pink-600={currentSongIndex === 0}
-				class:from-emerald-500={currentSongIndex === 1}
-				class:to-teal-600={currentSongIndex === 1}
-				class:from-indigo-500={currentSongIndex === 2}
-				class:to-blue-600={currentSongIndex === 2}
-			>
-				{#if currentSongIndex === 0}
-					<!-- Cherry Blossom Outline SVG -->
-					<svg class="w-10 h-10 text-white/90 drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)] animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M12 2.69l.79.62c2.14 1.67 4.88 2.69 7.64 2.69h.88v.88c0 2.76-1.02 5.5-2.69 7.64l-.62.79.62.79c1.67 2.14 2.69 4.88 2.69 7.64v.88h-.88c-2.76 0-5.5-1.02-7.64-2.69l-.79-.62-.79.62c-2.14 1.67-4.88 2.69-7.64 2.69h-.88v-.88c0-2.76 1.02-5.5 2.69-7.64l.62-.79-.62-.79C3.71 14.38 2.69 11.64 2.69 8.88v-.88h.88c2.76 0 5.5 1.02 7.64 2.69l.79.62z"/>
-						<circle cx="12" cy="12" r="3" fill="currentColor"/>
-					</svg>
-				{:else if currentSongIndex === 1}
-					<!-- Spinning Vinyl / Disc SVG -->
-					<svg class="w-10 h-10 text-white/90 drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]" class:animate-spin={playing} style="animation-duration: 4s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<circle cx="12" cy="12" r="10"/>
-						<circle cx="12" cy="12" r="6"/>
-						<circle cx="12" cy="12" r="2" fill="currentColor"/>
-						<path d="M12 2a10 10 0 0 1 10 10"/>
-					</svg>
-				{:else}
-					<!-- Network Connections / Sync Group SVG -->
-					<svg class="w-10 h-10 text-white/90 drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-						<circle cx="9" cy="7" r="4"/>
-						<path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-						<path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-					</svg>
-				{/if}
+	<!-- LEFT COLUMN: Highly Realistic, Premium Smartphone Mockup -->
+	<div class="flex-none w-full max-w-[310px] mx-auto z-10 relative">
+		<!-- Phone Chassis Container -->
+		<div class="iphone-mockup float-3d-medium" class:paused={!playing}>
+			<!-- Camera Notch -->
+			<div class="notch">
+				<div class="notch-speaker"></div>
+				<div class="notch-camera"></div>
 			</div>
-			<!-- Song Title & Artist -->
-			<div class="min-w-0">
-				<h3 class="font-serif text-[18px] md:text-[20px] font-medium tracking-tight text-white leading-tight truncate">
-					{currentSong.title}
-				</h3>
-				<p class="font-sans text-[12px] md:text-[13px] text-neutral-400 font-light truncate mt-0.5">
-					{currentSong.artist}
-				</p>
-			</div>
-		</div>
-
-		<!-- Progress Bar -->
-		<div class="mb-5">
-			<button class="w-full h-2.5 rounded-full bg-neutral-800/80 cursor-pointer overflow-hidden relative group border-0 p-0 block" onclick={handleProgressClick} aria-label="Progress bar">
-				<div 
-					class="h-full bg-gradient-to-r from-c-pk via-c-pk-m to-white rounded-full transition-all duration-300 relative" 
-					style="width: {(currentTime / currentSong.duration) * 100}%"
-				>
-					<div class="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white shadow-md scale-0 group-hover:scale-100 transition-transform duration-150"></div>
+			
+			<!-- Screen Content Area -->
+			<div class="screen-content">
+				<!-- Background Loop Video Container -->
+				<div class="canvas-video-container">
+					<!-- svelte-ignore a11y_media_has_caption -->
+					<video 
+						bind:this={videoEl}
+						src={currentSong.canvasUrl}
+						loop
+						muted
+						playsinline
+						onerror={handleVideoError}
+						class="w-full h-full object-cover"
+					></video>
+					<!-- Dark Glass gradient wash to maintain premium readability -->
+					<div class="video-overlay"></div>
 				</div>
-			</button>
-			<div class="flex items-center justify-between font-mono text-[10px] text-neutral-500 mt-2">
-				<span>{formatTime(currentTime)}</span>
-				<span>{formatTime(currentSong.duration)}</span>
+
+				<!-- Translucent Phone Top Bar Widget -->
+				<div class="phone-header">
+					<span class="font-mono text-[10px] tracking-wide text-white">9:41</span>
+					<div class="status-icons">
+						<!-- Wifi Vector SVG -->
+						<svg class="phone-icon-small fill-current text-white" viewBox="0 0 24 24" width="12" height="12">
+							<path d="M12 21a2 2 0 1 1-2-2 2 2 0 0 1 2 2zm0-4a6 6 0 0 1-6-6 1 1 0 0 1 2 0 4 4 0 0 0 8 0 1 1 0 0 1 2 0 6 6 0 0 1-6 6zm0-5a10 10 0 0 1-10-10 1 1 0 1 1 2 0 8 8 0 0 0 16 0 1 1 0 1 1 2 0 10 10 0 0 1-10 10z"/>
+						</svg>
+						<!-- Cellular Signal Vector SVG -->
+						<svg class="phone-icon-small fill-current text-white" viewBox="0 0 24 24" width="12" height="12">
+							<rect x="3" y="14" width="3" height="6" rx="1"/>
+							<rect x="8" y="10" width="3" height="10" rx="1"/>
+							<rect x="13" y="6" width="3" height="14" rx="1"/>
+							<rect x="18" y="2" width="3" height="18" rx="1"/>
+						</svg>
+						<!-- Battery Vector SVG -->
+						<svg class="phone-icon-small text-white" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+							<rect x="2" y="7" width="16" height="10" rx="2"/>
+							<line x1="22" y1="11" x2="22" y2="13"/>
+							<rect x="4" y="9" width="8" height="6" rx="1" fill="currentColor"/>
+						</svg>
+					</div>
+				</div>
+
+				<!-- Player Screen Overlay -->
+				<div class="player-overlay">
+					<!-- Top Track Info Indicator Row -->
+					<div class="track-header-meta">
+						<div class="canvas-active-tag">
+							<div class="bar-animation">
+								<span class="eq-bar eq-1"></span>
+								<span class="eq-bar eq-2"></span>
+								<span class="eq-bar eq-3"></span>
+							</div>
+							<span>CANVAS PLAYING</span>
+						</div>
+						<div class="btn-circle-blur">
+							<!-- Heart vector SVG -->
+							<svg viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-c-pk">
+								<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+							</svg>
+						</div>
+					</div>
+
+					<!-- Bottom Playing Status Overlay Panel -->
+					<div class="player-bottom">
+						<!-- Title, artist & source -->
+						<div class="song-details-wrap">
+							<div class="song-text text-left">
+								<h4 class="truncate max-w-[170px] text-white">{currentSong.title}</h4>
+								<p class="truncate max-w-[170px] text-white/70">{currentSong.artist}</p>
+							</div>
+							<div class="source-bubble">
+								{#if currentSong.sourceType === 'hls'}
+									<span class="source-dot bg-red-500 animate-pulse"></span>
+								{:else if currentSong.sourceType === 'offline'}
+									<span class="source-dot bg-emerald-500"></span>
+								{:else}
+									<span class="source-dot bg-blue-500 animate-pulse"></span>
+								{/if}
+								<span>{currentSong.sourceType.toUpperCase()}</span>
+							</div>
+						</div>
+
+						<!-- Tiny progress slider bar -->
+						<div class="playback-bar-container">
+							<span class="time-label text-left">{formatTime(currentTime)}</span>
+							<button class="playback-slider border-0 p-0" onclick={handleProgressClick} aria-label="Seek track">
+								<div class="slider-filled" style="width: {(currentTime / currentSong.duration) * 100}%"></div>
+								<div class="slider-thumb" style="left: {(currentTime / currentSong.duration) * 100}%"></div>
+							</button>
+							<span class="time-label text-right">{formatTime(currentSong.duration)}</span>
+						</div>
+
+						<!-- Core Controller Buttons Row inside Phone Screen -->
+						<div class="playback-controls">
+							<!-- Shuffle Button -->
+							<button class="btn-ctrl" class:active={shuffleActive} onclick={() => shuffleActive = !shuffleActive} aria-label="Shuffle" title="Shuffle">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+									<polyline points="16 3 21 3 21 8"></polyline>
+									<line x1="4" y1="20" x2="21" y2="3"></line>
+									<polyline points="21 16 21 21 16 21"></polyline>
+									<line x1="15" y1="15" x2="21" y2="21"></line>
+									<line x1="4" y1="4" x2="9" y2="9"></line>
+								</svg>
+							</button>
+
+							<!-- Prev Button -->
+							<button class="btn-ctrl" onclick={prevSong} aria-label="Previous">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+									<polygon points="19 20 9 12 19 4 19 20"></polygon>
+									<line x1="5" y1="19" x2="5" y2="5"></line>
+								</svg>
+							</button>
+
+							<!-- Primary Play Pause Circle Button -->
+							<button class="btn-play-pause" onclick={togglePlay} aria-label={playing ? "Pause" : "Play"}>
+								{#if playing}
+									<svg viewBox="0 0 24 24" fill="currentColor">
+										<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+									</svg>
+								{:else}
+									<svg viewBox="0 0 24 24" class="translate-x-[1px]" fill="currentColor">
+										<path d="M8 5v14l11-7z"/>
+									</svg>
+								{/if}
+							</button>
+
+							<!-- Next Button -->
+							<button class="btn-ctrl" onclick={nextSong} aria-label="Next">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+									<polygon points="5 4 15 12 5 20 5 4"></polygon>
+									<line x1="19" y1="5" x2="19" y2="19"></line>
+								</svg>
+							</button>
+
+							<!-- Repeat Button -->
+							<button class="btn-ctrl" class:active={repeatActive} onclick={() => repeatActive = !repeatActive} aria-label="Repeat" title="Repeat">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+									<polyline points="17 1 21 5 17 9"></polyline>
+									<path d="M3 11V9a4 4 0 0 1 4-4h14M7 23 3 19 7 15"></path>
+									<path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+								</svg>
+							</button>
+						</div>
+
+						<!-- Connected Status Info Row -->
+						<div class="player-footer-icons">
+							<div class="flex items-center gap-1.5 text-indigo-400">
+								<!-- Headphones Icon -->
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-3 h-3">
+									<path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+									<path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+								</svg>
+								<span>Pulse Room Sync</span>
+							</div>
+							<button class="btn-text-mute" onclick={toggleMute} aria-label="Mute Toggle">
+								{#if isMuted}
+									<!-- Volume mute -->
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-3.5 h-3.5 text-red-400">
+										<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+										<line x1="23" y1="9" x2="17" y2="15"></line>
+										<line x1="17" y1="9" x2="23" y2="15"></line>
+									</svg>
+								{:else}
+									<!-- Volume high -->
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-3.5 h-3.5 text-white/80">
+										<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+										<path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+									</svg>
+								{/if}
+							</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-
-		<!-- Control Buttons -->
-		<div class="flex items-center justify-between gap-4 mb-2">
-			<!-- Secondary controls: mute -->
-			<button class="w-9 h-9 rounded-full bg-neutral-900/60 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white transition-colors cursor-pointer" onclick={toggleMute} aria-label={isMuted ? "Unmute" : "Mute"}>
-				{#if isMuted || volume === 0}
-					<!-- Volume Mute SVG -->
-					<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-						<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-						<line x1="23" y1="9" x2="17" y2="15"></line>
-						<line x1="17" y1="9" x2="23" y2="15"></line>
-					</svg>
-				{:else if volume < 35}
-					<!-- Volume Low SVG -->
-					<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-						<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-						<path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-					</svg>
-				{:else}
-					<!-- Volume High SVG -->
-					<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-						<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-						<path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-					</svg>
-				{/if}
-			</button>
-
-			<!-- Core transport controls -->
-			<div class="flex items-center gap-4">
-				<button class="w-10 h-10 rounded-full bg-neutral-900/60 hover:bg-neutral-800/80 border border-neutral-800 flex items-center justify-center text-[15px] transition-all hover:scale-[1.05] cursor-pointer text-neutral-400 hover:text-white" onclick={prevSong} aria-label="Previous song">
-					<!-- Prev SVG -->
-					<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-						<polygon points="19 20 9 12 19 4 19 20"></polygon>
-						<line x1="5" y1="19" x2="5" y2="5"></line>
-					</svg>
-				</button>
-				<button 
-					class="w-13 h-13 rounded-full bg-c-pk hover:bg-c-pk-m border-0 flex items-center justify-center text-white transition-all hover:scale-[1.08] active:scale-[0.96] cursor-pointer shadow-[0_4px_20px_rgba(224,79,106,0.4)] hover:shadow-[0_6px_25px_rgba(224,79,106,0.6)]" 
-					onclick={togglePlay} 
-					aria-label={playing ? "Pause" : "Play"}
-				>
-					{#if playing}
-						<!-- Pause SVG -->
-						<svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-							<rect x="6" y="4" width="4" height="16"></rect>
-							<rect x="14" y="4" width="4" height="16"></rect>
-						</svg>
-					{:else}
-						<!-- Play SVG -->
-						<svg class="w-4.5 h-4.5 translate-x-[1px]" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<polygon points="5 3 19 12 5 21 5 3"></polygon>
-						</svg>
-					{/if}
-				</button>
-				<button class="w-10 h-10 rounded-full bg-neutral-900/60 hover:bg-neutral-800/80 border border-neutral-800 flex items-center justify-center text-[15px] transition-all hover:scale-[1.05] cursor-pointer text-neutral-400 hover:text-white" onclick={nextSong} aria-label="Next song">
-					<!-- Next SVG -->
-					<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-						<polygon points="5 4 15 12 5 20 5 4"></polygon>
-						<line x1="19" y1="5" x2="19" y2="19"></line>
-					</svg>
-				</button>
-			</div>
-
-			<!-- Discord RPC view toggle -->
-			<button 
-				class="w-9 h-9 rounded-full border flex items-center justify-center transition-all cursor-pointer {showDiscordRpc ? 'bg-indigo-600 border-indigo-500 text-white hover:bg-indigo-500' : 'bg-neutral-900/60 border-neutral-800 text-neutral-400 hover:text-white'}"
-				onclick={() => showDiscordRpc = !showDiscordRpc}
-				title="Simulate Discord Rich Presence"
-			>
-				<!-- Discord Brand Icon SVG -->
-				<svg class="w-4 h-4 fill-current" viewBox="0 0 127.14 96.36">
-					<path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.5-5c.9-.65,1.76-1.34,2.58-2a75.58,75.58,0,0,0,72.9,0c.82.71,1.68,1.4,2.58,2a68.69,68.69,0,0,1-10.5,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,32.53-18.83C129.1,54.65,123.38,31.58,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
-				</svg>
-			</button>
-		</div>
-
 	</div>
-	<!-- Right Deck: Live Synced Romanized Lyrics Panel -->
-	<div class="flex flex-col flex-1 border-t md:border-t-0 md:border-l border-neutral-800/80 pt-6 md:pt-0 md:pl-8 min-h-[220px] justify-between z-10 relative">
+
+	<!-- RIGHT COLUMN: Elegant Glassmorphic Live Sync Lyrics Sheet -->
+	<div class="flex-grow flex flex-col pt-4 md:pt-0 md:pl-7 border-t md:border-t-0 md:border-l border-[#1c1c1e]/[0.06] min-h-[320px] justify-between z-10 relative text-left">
 		
-		<!-- Lyrics header -->
-		<div class="flex items-center justify-between mb-4.5">
-			<div class="font-mono text-[10px] uppercase tracking-widest text-c-pk flex items-center gap-2">
-				<span class="w-[8px] h-[8px] rounded-full bg-c-pk animate-pulse"></span>
-				Synced Lyrics Romanized
+		<!-- Panel Head Info -->
+		<div class="flex items-center justify-between mb-4">
+			<div class="font-mono text-[10px] uppercase tracking-[0.15em] text-c-pk flex items-center gap-2 font-bold">
+				<span class="w-[7px] h-[7px] rounded-full bg-c-pk animate-pulse"></span>
+				Live Romanized Lyrics
 			</div>
-			<div class="font-mono text-[9px] text-neutral-500 bg-neutral-900/40 px-2 py-0.5 rounded border border-neutral-800">Svelte 5 UI</div>
+			<div class="font-mono text-[9px] text-[#55555c] bg-white/50 border border-white/90 px-3 py-0.5 rounded-full font-semibold shadow-[0_2px_6px_rgba(0,0,0,0.02)]">
+				Track {currentSongIndex + 1} of {songs.length}
+			</div>
 		</div>
 
-		<!-- Scrolling lyric list -->
-		<div class="flex-1 overflow-hidden relative flex flex-col gap-5 py-2 justify-center">
-			<!-- Glowing top/bottom masks for fading out top/bottom list entries -->
-			<div class="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-neutral-950 to-transparent pointer-events-none z-10"></div>
-			<div class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-neutral-950 to-transparent pointer-events-none z-10"></div>
+		<!-- List selection chips of other tracks to let user switch tracks -->
+		<div class="flex flex-wrap gap-2 mb-4">
+			{#each songs as song, idx}
+				<button 
+					class="px-3 py-1.5 rounded-full font-sans text-[11px] font-semibold border transition-all cursor-pointer flex items-center gap-2 shadow-sm"
+					class:active-chip={idx === currentSongIndex}
+					class:inactive-chip={idx !== currentSongIndex}
+					onclick={() => currentSongIndex = idx}
+				>
+					<span class="w-1.5 h-1.5 rounded-full chip-dot"></span>
+					{song.title}
+				</button>
+			{/each}
+		</div>
+
+		<!-- Lyrics block with fade mask overlays -->
+		<div class="flex-grow overflow-hidden relative flex flex-col gap-4 py-3 justify-start max-h-[220px] overflow-y-auto scrollbar-none pr-1">
+			<!-- Faded top/bottom light visual overlays -->
+			<div class="absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-white/60 to-transparent pointer-events-none z-10"></div>
+			<div class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white/60 to-transparent pointer-events-none z-10"></div>
 			
 			{#each currentSong.lyrics as lyric, idx}
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div 
-					class="lyric-line transition-all duration-300 transform"
+					use:registerLyricEl={idx}
+					class="lyric-line transition-all duration-350 transform py-1 px-2.5 rounded-xl cursor-pointer hover:bg-white/[0.03]"
 					class:active-lyric={idx === activeLyricIndex}
 					class:inactive-lyric={idx !== activeLyricIndex}
+					onclick={() => seekToTime(lyric.time)}
 					style="
-						opacity: {idx === activeLyricIndex ? 1 : (Math.abs(idx - activeLyricIndex) === 1 ? 0.35 : 0.1)};
-						transform: translateY({(activeLyricIndex - idx) * -4}px) scale({idx === activeLyricIndex ? 1.02 : 0.96});
+						opacity: {idx === activeLyricIndex ? 1 : (Math.abs(idx - activeLyricIndex) === 1 ? 0.65 : 0.35)};
+						transform: scale({idx === activeLyricIndex ? 1.01 : 0.98});
 					"
 				>
-					<!-- Native alphabet line -->
-					<div class="native-text font-serif text-[15px] md:text-[17px] leading-tight text-neutral-400">
+					<!-- Original script regional lyrics line -->
+					<div class="native-text font-serif text-[13px] md:text-[14px] leading-snug transition-colors">
 						{lyric.native}
 					</div>
-					<!-- Highlighted English-script translation & pronunciation (Romanized) -->
-					<div class="roman-text font-serif text-[18px] md:text-[21px] font-normal leading-tight tracking-tight mt-1.5 min-h-[26px]">
+					<!-- Transliterated Romanized Lyric Line with pink-blossom neon glow on active -->
+					<div class="roman-text font-serif text-[17px] md:text-[19px] font-medium leading-snug tracking-tight mt-1 transition-colors">
 						{#if idx === activeLyricIndex}
-							<span class="bg-gradient-to-r from-c-pk via-[#ff7891] to-white bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(224,79,106,0.15)]">
+							<span class="bg-gradient-to-r from-c-pk via-[#ff7890] to-white bg-clip-text text-transparent font-semibold drop-shadow-[0_2px_8px_rgba(224,79,106,0.35)]">
 								{lyric.roman}
 							</span>
 						{:else}
 							<span>{lyric.roman}</span>
 						{/if}
 					</div>
-					<!-- English translation subtitle -->
+					<!-- English translation subtitle on active line -->
 					{#if idx === activeLyricIndex}
-						<div class="eng-text font-sans text-[11px] text-neutral-500 italic mt-1.5 transition-all animate-fade-in">
-							({lyric.eng})
+						<div class="eng-text font-sans text-[11px] text-[#48484a] font-medium italic mt-1 transition-all animate-fade-in flex items-center gap-1">
+							<!-- Subtitle Info Icon -->
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-3.5 h-3.5 text-neutral-400">
+								<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+							</svg>
+							<span>{lyric.eng}</span>
 						</div>
 					{/if}
 				</div>
 			{/each}
 		</div>
 
-		<!-- Discord RPC Live Sim Box -->
+		<!-- Discord Rich Presence live simulation console bottom bar -->
 		{#if showDiscordRpc}
-			<div class="discord-rpc-widget mt-5 p-3 rounded-[14px] bg-[#5865F2]/10 border border-[#5865F2]/20 flex items-center gap-3 transition-all duration-300 hover:bg-[#5865F2]/15 animate-fade-in relative overflow-hidden group">
-				<!-- Discord controller watermark SVG -->
-				<svg class="absolute -right-4 -bottom-4 w-[84px] h-[84px] text-white opacity-[0.04] group-hover:scale-110 transition-transform duration-300 fill-current" viewBox="0 0 127.14 96.36">
+			<div class="discord-rpc-widget mt-4 p-3 rounded-[18px] bg-white/45 border border-white/75 flex items-center gap-3 transition-all duration-300 hover:bg-white/60 animate-fade-in relative overflow-hidden group shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+				<!-- Discord controller watermark SVG background -->
+				<svg class="absolute -right-4 -bottom-4 w-[74px] h-[74px] text-[#5865F2] opacity-[0.06] group-hover:scale-110 transition-transform duration-300 fill-current" viewBox="0 0 127.14 96.36">
 					<path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.5-5c.9-.65,1.76-1.34,2.58-2a75.58,75.58,0,0,0,72.9,0c.82.71,1.68,1.4,2.58,2a68.69,68.69,0,0,1-10.5,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,32.53-18.83C129.1,54.65,123.38,31.58,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
 				</svg>
-				<!-- Discord icon/avatar -->
-				<div class="w-10 h-10 rounded-full bg-[#5865F2] flex items-center justify-center text-white shrink-0 font-bold relative shadow-md">
-					<!-- Headphones SVG -->
-					<svg class="w-4.5 h-4.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+				
+				<!-- Discord user details avatar -->
+				<div class="w-9 h-9 rounded-full bg-[#5865F2] flex items-center justify-center text-white shrink-0 font-bold relative shadow-sm">
+					<!-- Audio controller headphones SVG -->
+					<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
 						<path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
 						<path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
 					</svg>
-					<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-neutral-950 rounded-full" title="Online"></span>
+					<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
 				</div>
-				<!-- Discord activity status -->
+				
 				<div class="min-w-0 flex-1">
 					<div class="flex items-center gap-1.5">
-						<span class="font-sans text-[11px] font-semibold text-white">Anand</span>
-						<span class="font-mono text-[7px] uppercase tracking-wider text-neutral-400 bg-neutral-900/60 border border-neutral-800 px-1 py-0.2 rounded-sm shrink-0">Discord RPC</span>
+						<span class="font-sans text-[11px] font-bold text-[#1c1c1e]">Anand</span>
+						<span class="font-mono text-[7px] uppercase tracking-wider text-[#4d57c8] bg-[#5865F2]/12 border border-[#5865F2]/20 px-1.5 py-0.2 rounded-sm shrink-0 font-bold">DISCORD PRESENCE</span>
 					</div>
-					<p class="font-sans text-[10px] text-neutral-300 leading-tight truncate mt-0.5">
-						Listening to <strong class="text-[#5865F2] font-normal">{currentSong.title}</strong>
+					<p class="font-sans text-[10px] text-[#2c2c2e] leading-tight truncate mt-0.5">
+						Listening to <strong class="text-c-pk font-bold">{currentSong.title}</strong>
 					</p>
-					<p class="font-sans text-[9px] text-neutral-400 truncate mt-0.2 font-light">
+					<p class="font-sans text-[9px] text-[#8e8e93] truncate mt-0.2">
 						on Echo Pulse · {formatTime(currentTime)} elapsed
 					</p>
 				</div>
 			</div>
 		{/if}
-
 	</div>
 </div>
 
 <style>
-	.lyric-line {
-		transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+	/* iPhone Mockup frame with active 3D floating and hover tilt */
+	.iphone-mockup {
+		width: 100%;
+		height: 480px;
+		background: #0d0d11;
+		border-radius: 40px;
+		padding: 10px;
+		box-shadow: 
+			0 30px 60px -15px rgba(0, 0, 0, 0.7),
+			0 0 0 4px #1a1a24,
+			0 0 0 8px #08080c;
+		position: relative;
+		overflow: hidden;
+		transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+		transform-style: preserve-3d;
+		perspective: 1000px;
 	}
-	.active-lyric .native-text {
-		color: #b3a497;
+	.iphone-mockup:hover {
+		transform: translateY(-8px) rotateX(8deg) rotateY(-6deg) scale(1.03) !important;
+		box-shadow: 
+			0 50px 100px -20px rgba(0, 0, 0, 0.9),
+			0 15px 30px rgba(224, 79, 106, 0.25),
+			0 0 0 4px #222230,
+			0 0 0 8px #0c0c12;
+		animation-play-state: paused !important; /* freeze float cycle when interacting */
 	}
-	.active-lyric .roman-text {
+
+	/* Dynamic screen container inside frame */
+	.screen-content {
+		width: 100%;
+		height: 100%;
+		background-color: #0d0c0f;
+		border-radius: 32px;
+		overflow: hidden;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		padding: 18px 14px 14px;
+	}
+
+	/* Apple Camera Notch details */
+	.notch {
+		position: absolute;
+		top: 10px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 100px;
+		height: 18px;
+		background: #000;
+		border-bottom-left-radius: 12px;
+		border-bottom-right-radius: 12px;
+		z-index: 20;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 0 10px;
+	}
+	.notch-speaker {
+		width: 35px;
+		height: 3px;
+		background: #111;
+		border-radius: 2px;
+	}
+	.notch-camera {
+		width: 5.5px;
+		height: 5.5px;
+		background: #0d0022;
+		border-radius: 50%;
+		box-shadow: inset 0 1px 1.5px rgba(255,255,255,0.2);
+	}
+
+	/* Video looping layer */
+	.canvas-video-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+	}
+	.video-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.88) 100%);
+		z-index: 2;
+	}
+
+	/* Simulated Status bar headers */
+	.phone-header {
+		position: relative;
+		z-index: 10;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0 4px;
+	}
+	.status-icons {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+	.phone-icon-small {
+		width: 11px;
+		height: 11px;
+	}
+
+	/* Translucent overlays */
+	.player-overlay {
+		position: relative;
+		z-index: 10;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		height: 100%;
+		padding-top: 14px;
+	}
+
+	.track-header-meta {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.canvas-active-tag {
+		background: rgba(0,0,0,0.6);
+		border: 1px solid rgba(255,255,255,0.2);
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+		border-radius: 20px;
+		padding: 4px 10px;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 0.6rem;
+		font-weight: 700;
+		color: #fff;
+		letter-spacing: 0.05em;
+	}
+
+	.btn-circle-blur {
+		width: 26px;
+		height: 26px;
+		background: rgba(0,0,0,0.45);
+		border: 1px solid rgba(255,255,255,0.1);
+		backdrop-filter: blur(6px);
+		border-radius: 50%;
+		color: #fff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+	}
+
+	/* Live active music sound Equalizer */
+	.bar-animation {
+		display: flex;
+		align-items: flex-end;
+		gap: 1.5px;
+		width: 8.5px;
+		height: 7px;
+	}
+	.bar-animation .eq-bar {
+		width: 1.5px;
+		background-color: var(--color-c-pk);
+		border-radius: 1px;
+	}
+	.bar-animation .eq-1 { height: 30%; animation: eqScale 0.5s infinite alternate; }
+	.bar-animation .eq-2 { height: 90%; animation: eqScale 0.4s infinite alternate-reverse 0.1s; }
+	.bar-animation .eq-3 { height: 60%; animation: eqScale 0.6s infinite alternate 0.2s; }
+
+	@keyframes eqScale {
+		0% { height: 20%; }
+		100% { height: 100%; }
+	}
+
+	.paused .eq-bar {
+		animation-play-state: paused !important;
+	}
+
+	.player-bottom {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.song-details-wrap {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.song-text h4 {
+		font-size: 1.05rem;
+		font-weight: 700;
+		color: #fff;
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+	}
+	.song-text p {
+		font-size: 0.8rem;
+		color: rgba(255,255,255,0.7);
+		font-weight: 500;
+		margin-top: 2px;
+	}
+	.source-bubble {
+		background: rgba(255,255,255,0.1);
+		border: 1px solid rgba(255,255,255,0.08);
+		backdrop-filter: blur(4px);
+		border-radius: 20px;
+		padding: 3px 8px;
+		font-size: 0.65rem;
+		font-weight: 700;
+		color: rgba(255,255,255,0.9);
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+	.source-dot {
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+	}
+
+	/* Slider range mechanics */
+	.playback-bar-container {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+	.time-label {
+		font-size: 0.6rem;
+		color: rgba(255,255,255,0.5);
+		width: 25px;
+		font-family: var(--font-mono);
+	}
+	.playback-slider {
+		flex-grow: 1;
+		height: 3px;
+		background: rgba(255,255,255,0.22);
+		border-radius: 2px;
+		position: relative;
+		cursor: pointer;
+	}
+	.slider-filled {
+		height: 100%;
+		background: #fff;
+		border-radius: 2px;
+	}
+	.slider-thumb {
+		width: 6.5px;
+		height: 6.5px;
+		background: #fff;
+		border-radius: 50%;
+		position: absolute;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	.playback-controls {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 2px;
+	}
+	.btn-ctrl {
+		background: transparent;
+		border: none;
+		color: rgba(255,255,255,0.6);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 4px;
+		transition: all 0.2s ease;
+	}
+	.btn-ctrl svg {
+		width: 15px;
+		height: 15px;
+	}
+	.btn-ctrl:hover {
+		color: #fff;
+	}
+	.btn-ctrl.active {
+		color: var(--color-c-pk);
+		drop-shadow: 0 0 8px rgba(224,79,106,0.5);
+	}
+
+	.btn-play-pause {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		background: #fff;
+		border: none;
+		color: #000;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+		transition: transform 0.2s ease, background-color 0.2s ease;
+	}
+	.btn-play-pause:hover {
+		transform: scale(1.06);
+		background-color: var(--color-c-pk-m);
+	}
+	.btn-play-pause svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	.player-footer-icons {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		color: rgba(255,255,255,0.5);
+		font-size: 0.6rem;
 		font-weight: 500;
 	}
+	.player-footer-icons span {
+		font-weight: 700;
+		font-size: 0.65rem;
+		letter-spacing: 0.01em;
+	}
+	.btn-text-mute {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: color 0.2s ease;
+	}
+
+	/* Interactive selection chip layout - iOS Light Glassmorphic Style */
+	.active-chip {
+		background: rgba(224, 79, 106, 0.12);
+		border-color: rgba(224, 79, 106, 0.25);
+		color: var(--color-c-pk);
+		box-shadow: 0 4px 12px rgba(224, 79, 106, 0.06);
+	}
+	.active-chip .chip-dot {
+		background-color: var(--color-c-pk);
+	}
+	.inactive-chip {
+		background: rgba(255, 255, 255, 0.45);
+		border-color: rgba(0, 0, 0, 0.05);
+		color: #4a4a4f;
+	}
+	.inactive-chip .chip-dot {
+		background-color: rgba(0, 0, 0, 0.2);
+	}
+	.inactive-chip:hover {
+		background: rgba(255, 255, 255, 0.7);
+		border-color: rgba(0, 0, 0, 0.1);
+		color: #1c1c1e;
+	}
+
+	/* Lyrics live transitions mechanics - High Contrast Light Mode */
+	.lyric-line {
+		transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s ease;
+	}
+	.active-lyric {
+		background-color: rgba(224, 79, 106, 0.07);
+		border-left: 3.5px solid var(--color-c-pk);
+		padding-left: 9px !important;
+	}
+	.active-lyric .native-text {
+		color: #1c1c1e;
+	}
+	.active-lyric .roman-text {
+		font-weight: 700;
+		color: #000;
+	}
 	.inactive-lyric .roman-text {
-		color: #594a3d;
+		color: #3a3a3c;
 	}
 	.inactive-lyric .native-text {
-		color: #40342a;
+		color: #8e8e93;
 	}
+
+	/* Custom hidden scrollbar style to make it seamless */
+	.scrollbar-none::-webkit-scrollbar {
+		display: none;
+	}
+	.scrollbar-none {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
 	@keyframes fadeIn {
 		from { opacity: 0; transform: translateY(4px); }
 		to { opacity: 1; transform: none; }
