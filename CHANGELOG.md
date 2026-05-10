@@ -1,4 +1,21 @@
-## [4.7.6] - 2026-04-10
+## [4.7.7] - 2026-05-10
+
+### Added
+
+- **Discord RPC Live Seekbar**: Integrated a dynamic, ticking seekbar showing your active song's current progress and total duration directly on your Discord profile card.
+
+### Changed
+
+- **Spotify Matching Engine**: Upgraded the track lookup system with a dual-query strategy (precise-first, fuzzy fallback) to easily match YouTube, Saavn, or local music with Spotify catalog IDs.
+
+### Fixed
+
+- **Instant Skip Sync**: Resolved the status update delay when skipping tracks or clicking play/pause, forcing the Discord progress bar to reset and update instantly.
+- **Up Next Panel Sizing**: Fixed layout height calculation errors in the Up Next panel, resolving app crashes and restoring smooth sliding behavior.
+- **Spotify Canvas Auth**: Upgraded search authentication by replacing expired API keys to support stable, continuous background Canvas fetches.
+
+
+## [4.7.6] - 2026-05-09
 
 ### Added
 
