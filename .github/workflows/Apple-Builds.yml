@@ -2,7 +2,11 @@ name: "Apple Build & Release"
 
 on:
   workflow_dispatch:
-    branches: main
+    inputs:
+      build_number:
+        description: 'Build number'
+        required: true
+        default: '2111'
 
 jobs:
   macos_build:
@@ -35,7 +39,10 @@ jobs:
           echo "version=$ver" >> $GITHUB_OUTPUT
       
       - name: Set build number
-        run: echo "BUILDVERSION=2108" >> $GITHUB_ENV
+        run: |
+          BUILD_NUM="${{ github.event.inputs.build_number }}"
+          if [ -z "$BUILD_NUM" ]; then BUILD_NUM="2111"; fi
+          echo "BUILDVERSION=$BUILD_NUM" >> $GITHUB_ENV
 
       - name: Configure macOS Entitlements
         run: |
@@ -136,7 +143,10 @@ jobs:
 #           echo "VERSION=$ver" >> $GITHUB_ENV
 #       
 #       - name: Set build number
-#         run: echo "BUILDVERSION=2108" >> $GITHUB_ENV
+#         run: |
+#           BUILD_NUM="${{ github.event.inputs.build_number }}"
+#           if [ -z "$BUILD_NUM" ]; then BUILD_NUM="2111"; fi
+#           echo "BUILDVERSION=$BUILD_NUM" >> $GITHUB_ENV
 # 
 #       - name: Build iOS (Unsigned)
 #         run: |
