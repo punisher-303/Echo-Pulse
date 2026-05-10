@@ -163,19 +163,19 @@ jobs:
       - name: Tar Linux App
         run: |
           cd ECHOPULS/build/linux/x64/release/bundle
-          tar -czf echo_pulse_linux_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.tar.gz .
+          tar -czf ../echo_pulse_linux_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.tar.gz .
 
       - name: Upload Artifacts (Linux)
         uses: actions/upload-artifact@v4
         with:
           name: echo_pulse_linux
-          path: ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.tar.gz
+          path: ECHOPULS/build/linux/x64/release/echo_pulse_linux_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.tar.gz
 
       - name: Create Release (Linux)
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            ECHOPULS/build/linux/x64/release/bundle/echo_pulse_linux_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.tar.gz
+            ECHOPULS/build/linux/x64/release/echo_pulse_linux_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.tar.gz
           tag: v${{ env.VERSION }}+${{ env.BUILDVERSION }}
           token: ${{secrets.SECRET_KEY}}
           allowUpdates: true
