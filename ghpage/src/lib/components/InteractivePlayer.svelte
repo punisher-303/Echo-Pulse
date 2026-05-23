@@ -13,6 +13,26 @@
 	let shuffleActive = $state(false);
 	let repeatActive = $state(false);
 
+	let lanyardData = $state(null);
+	let pollInterval;
+	
+	const DISCORD_USER_ID = "1377133763670183987"; // Replace with your Discord User ID (18 digits)
+
+	async function fetchLanyard() {
+		if (!DISCORD_USER_ID || DISCORD_USER_ID === "YOUR_DISCORD_USER_ID") return;
+		try {
+			const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+			if (res.ok) {
+				const json = await res.json();
+				if (json.success) {
+					lanyardData = json.data;
+				}
+			}
+		} catch (e) {
+			console.error("Error fetching Lanyard status:", e);
+		}
+	}
+
 	const songs = [
 		{
 			title: "Malare (Premam)",
@@ -77,6 +97,79 @@
 
 	let volumePercent = $derived(isMuted ? 0 : volume / 100);
 
+	// Reactive Discord Presence State from Lanyard with simulated fallback
+	const discordState = $derived.by(() => {
+		if (lanyardData) {
+			const user = lanyardData.discord_user;
+			const isSpotify = lanyardData.listening_to_spotify && lanyardData.spotify;
+			const custom = lanyardData.activities?.find(a => a.type === 4);
+			const game = lanyardData.activities?.find(a => a.type !== 4);
+			
+			// Build status dot color class
+			let statusColor = "bg-neutral-400"; // offline
+			if (lanyardData.discord_status === "online") statusColor = "bg-green-500";
+			else if (lanyardData.discord_status === "idle") statusColor = "bg-yellow-500";
+			else if (lanyardData.discord_status === "dnd") statusColor = "bg-red-500";
+			
+			// Avatar URL
+			let avatarUrl = "";
+			if (user.avatar) {
+				avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+			} else {
+				// Default Discord avatar formula
+				const defaultAvatarIndex = user.discriminator === "0" 
+					? Number((BigInt(user.id) >> 22n) % 6n)
+					: Number(user.discriminator) % 5;
+				avatarUrl = `https://cdn.discordapp.com/embed/avatars/${defaultAvatarIndex}.png`;
+			}
+
+			// Avatar Decoration URL
+			let decorationUrl = null;
+			if (user.avatar_decoration_data && user.avatar_decoration_data.asset) {
+				decorationUrl = `https://cdn.discordapp.com/avatar-decoration-presets/${user.avatar_decoration_data.asset}.png?size=96`;
+			}
+			
+			let statusTitle = "Online";
+			let statusDetails = "Active on Discord";
+			
+			if (isSpotify) {
+				statusTitle = lanyardData.spotify.song;
+				statusDetails = `by ${lanyardData.spotify.artist}`;
+			} else if (game) {
+				statusTitle = game.name;
+				statusDetails = game.details || game.state || "Active";
+			} else if (custom) {
+				statusTitle = custom.state || "";
+				statusDetails = "Custom Status";
+			}
+			
+			return {
+				isLive: true,
+				username: user.global_name || user.username || "Anand",
+				avatarUrl,
+				decorationUrl,
+				statusColor,
+				statusTitle,
+				statusDetails,
+				isSpotify,
+				tag: isSpotify ? "LISTENING ON SPOTIFY" : game ? "PLAYING" : "DISCORD STATUS"
+			};
+		}
+		
+		// Fallback to local simulator
+		return {
+			isLive: false,
+			username: "Anand",
+			avatarUrl: null,
+			decorationUrl: null,
+			statusColor: "bg-green-500",
+			statusTitle: currentSong.title,
+			statusDetails: `on Echo Pulse · ${formatTime(currentTime)} elapsed`,
+			isSpotify: false,
+			tag: "DISCORD PRESENCE"
+		};
+	});
+
 	onMount(() => {
 		if (videoEl && playing) {
 			videoEl.play().catch(() => {});
@@ -84,6 +177,15 @@
 		if (audioEl && playing) {
 			audioEl.play().catch(() => {});
 		}
+		
+		if (DISCORD_USER_ID && DISCORD_USER_ID !== "YOUR_DISCORD_USER_ID") {
+			fetchLanyard();
+			pollInterval = setInterval(fetchLanyard, 15000); // Update status every 15s
+		}
+	});
+
+	onDestroy(() => {
+		if (pollInterval) clearInterval(pollInterval);
 	});
 
 	// Trigger restart when song changes
@@ -506,26 +608,43 @@
 					<path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.5-5c.9-.65,1.76-1.34,2.58-2a75.58,75.58,0,0,0,72.9,0c.82.71,1.68,1.4,2.58,2a68.69,68.69,0,0,1-10.5,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,32.53-18.83C129.1,54.65,123.38,31.58,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
 				</svg>
 				
-				<!-- Discord user details avatar -->
-				<div class="w-9 h-9 rounded-full bg-[#5865F2] flex items-center justify-center text-white shrink-0 font-bold relative shadow-sm">
-					<!-- Audio controller headphones SVG -->
-					<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-						<path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-						<path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-					</svg>
-					<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
+				<!-- Discord user details avatar & decoration -->
+				<div class="relative w-9 h-9 shrink-0 flex items-center justify-center">
+					{#if discordState.avatarUrl}
+						<div class="w-[30px] h-[30px] rounded-full overflow-hidden border border-[#5865F2]/20 shadow-sm bg-neutral-100 relative">
+							<img src={discordState.avatarUrl} alt={discordState.username} class="w-full h-full object-cover" />
+						</div>
+					{:else}
+						<div class="w-[30px] h-[30px] rounded-full bg-[#5865F2] flex items-center justify-center text-white relative shadow-sm border border-[#5865F2]/20">
+							<!-- Audio controller headphones SVG -->
+							<svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+								<path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+								<path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+							</svg>
+						</div>
+					{/if}
+					
+					{#if discordState.decorationUrl}
+						<img src={discordState.decorationUrl} alt="Discord Avatar Decoration" class="absolute -top-[12%] -left-[12%] w-[124%] h-[124%] pointer-events-none z-10 scale-[1.08]" />
+					{/if}
+					
+					<span class="absolute bottom-0 right-0 w-2.5 h-2.5 {discordState.statusColor} border-2 border-white rounded-full z-20"></span>
 				</div>
 				
 				<div class="min-w-0 flex-1">
 					<div class="flex items-center gap-1.5">
-						<span class="font-sans text-[11px] font-bold text-[#1c1c1e]">Anand</span>
-						<span class="font-mono text-[7px] uppercase tracking-wider text-[#4d57c8] bg-[#5865F2]/12 border border-[#5865F2]/20 px-1.5 py-0.2 rounded-sm shrink-0 font-bold">DISCORD PRESENCE</span>
+						<span class="font-sans text-[11px] font-bold text-[#1c1c1e]">{discordState.username}</span>
+						<span class="font-mono text-[7px] uppercase tracking-wider text-[#4d57c8] bg-[#5865F2]/12 border border-[#5865F2]/20 px-1.5 py-0.2 rounded-sm shrink-0 font-bold">{discordState.tag}</span>
 					</div>
 					<p class="font-sans text-[10px] text-[#2c2c2e] leading-tight truncate mt-0.5">
-						Listening to <strong class="text-c-pk font-bold">{currentSong.title}</strong>
+						{#if discordState.isSpotify}
+							Listening to <strong class="text-c-pk font-bold">{discordState.statusTitle}</strong>
+						{:else}
+							<strong>{discordState.statusTitle}</strong>
+						{/if}
 					</p>
 					<p class="font-sans text-[9px] text-[#8e8e93] truncate mt-0.2">
-						on Echo Pulse · {formatTime(currentTime)} elapsed
+						{discordState.statusDetails}
 					</p>
 				</div>
 			</div>
