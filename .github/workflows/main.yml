@@ -93,7 +93,7 @@ jobs:
         run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/EchoPulse.exe" -NewName "echopulse.exe"
 
       - name: ZIP Windows build
-        run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
+        run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64.zip.zip
 
       - name: Upload Artifacts (Windows+Android)
         uses: actions/upload-artifact@v4
@@ -101,7 +101,7 @@ jobs:
           name: Release
           path: |
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_universal.apk
-            ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
+            ECHOPULS/build/windows/x64/echo_pulse_windows_x64.zip
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_armeabi-v7a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_arm64-v8a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86_64.apk
@@ -110,7 +110,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            ECHOPULS/build/windows/x64/echo_pulse_windows_x64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
+            ECHOPULS/build/windows/x64/echo_pulse_windows_x64.zip
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_universal.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_armeabi-v7a.apk
             ECHOPULS/build/app/outputs/flutter-apk/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_arm64-v8a.apk
