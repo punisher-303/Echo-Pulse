@@ -16,6 +16,7 @@
 	import Download from '$lib/components/Download.svelte';
 	import Support from '$lib/components/Support.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import SupportWidget from '$lib/components/SupportWidget.svelte';
 
 	let repo = "punisher-303/Echo-Pulse";
 
@@ -127,4 +128,6 @@
 	</main>
 	
 	<Footer />
+	
+	<SupportWidget />
 </div>
