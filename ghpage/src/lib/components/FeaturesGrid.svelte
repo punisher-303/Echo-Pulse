@@ -61,6 +61,21 @@
 			desc: 'Transparent, secure, and community-driven. Your music, your app.'
 		}
 	];
+
+	// Action to track pointer positions efficiently without triggering Svelte re-renders
+	function spotlight(node) {
+		const handleMouseMove = (e) => {
+			const rect = node.getBoundingClientRect();
+			node.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+			node.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+		};
+		node.addEventListener('mousemove', handleMouseMove, { passive: true });
+		return {
+			destroy() {
+				node.removeEventListener('mousemove', handleMouseMove);
+			}
+		};
+	}
 </script>
 
 <!-- FEATURES -->
@@ -79,9 +94,9 @@
 
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
 		{#each features as feature}
-			<div class="bg-c-s1 border-c-b1 border-[1.5px] rounded-[13px] p-4 flex gap-3 items-start hover-3d-card group">
+			<div use:spotlight class="bg-c-s1 border-c-b1 border-[1.5px] rounded-[13px] p-4 flex gap-3 items-start hover-3d-card group glow-card">
 				<!-- Icon container with real vector icons, no emojis -->
-				<div class="w-[34px] h-[34px] rounded-[9px] flex items-center justify-center shrink-0 mt-[1px] bg-c-pk-l/30 text-c-pk group-hover:scale-105 transition-transform duration-200">
+				<div class="w-[34px] h-[34px] rounded-[9px] flex items-center justify-center shrink-0 mt-[1px] bg-c-pk-l/30 text-c-pk group-hover:scale-105 transition-transform duration-200 z-10 relative">
 					{#if feature.id === 'ads'}
 						<svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
 							<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
@@ -143,7 +158,7 @@
 					{/if}
 				</div>
 				<!-- Text -->
-				<div class="flex-1 min-w-0">
+				<div class="flex-1 min-w-0 z-10 relative">
 					<div class="font-serif text-[14px] font-normal tracking-[-0.015em] leading-[1.2] mb-[3px] text-c-t1">
 						{feature.title}
 					</div>
@@ -155,3 +170,40 @@
 		{/each}
 	</div>
 </section>
+
+<style>
+	.glow-card {
+		position: relative;
+		overflow: hidden;
+	}
+	.glow-card::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(280px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(224, 79, 106, 0.08), transparent 75%);
+		pointer-events: none;
+		z-index: 0;
+		opacity: 0;
+		transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		border-radius: inherit;
+	}
+	.glow-card::after {
+		content: '';
+		position: absolute;
+		inset: -1.5px;
+		background: radial-gradient(180px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(224, 79, 106, 0.28), transparent 70%);
+		border-radius: inherit;
+		pointer-events: none;
+		z-index: 2;
+		opacity: 0;
+		transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		padding: 1.5px;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+	}
+	.glow-card:hover::before,
+	.glow-card:hover::after {
+		opacity: 1;
+	}
+</style>

@@ -67,12 +67,27 @@
 			loading = false;
 		}
 	});
+
+	// Action to track pointer positions efficiently without triggering Svelte re-renders
+	function spotlight(node) {
+		const handleMouseMove = (e) => {
+			const rect = node.getBoundingClientRect();
+			node.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+			node.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+		};
+		node.addEventListener('mousemove', handleMouseMove, { passive: true });
+		return {
+			destroy() {
+				node.removeEventListener('mousemove', handleMouseMove);
+			}
+		};
+	}
 </script>
 
-<div class="metrics-dashboard w-full rounded-[20px] border border-c-b1 bg-white/70 backdrop-blur-xl shadow-sh-1 p-5 md:p-6 flex flex-col sm:flex-row gap-5 items-stretch justify-between select-none relative group transition-all duration-300 hover:border-c-pk-m/60 hover:shadow-[0_12px_36px_rgba(224,79,106,0.06)]">
+<div use:spotlight class="metrics-dashboard w-full rounded-[20px] border border-c-b1 bg-white/70 backdrop-blur-xl shadow-sh-1 p-5 md:p-6 flex flex-col sm:flex-row gap-5 items-stretch justify-between select-none relative group transition-all duration-300 hover:border-c-pk-m/60 hover:shadow-[0_12px_36px_rgba(224,79,106,0.06)] glow-card">
 	
 	<!-- Part 1: Total Downloads -->
-	<div class="flex-1 flex gap-3.5 items-center sm:border-r border-c-b1/60 sm:pr-6">
+	<div class="flex-1 flex gap-3.5 items-center sm:border-r border-c-b1/60 sm:pr-6 z-10 relative">
 		<div class="w-11 h-11 rounded-[12px] bg-c-pk-l flex items-center justify-center shrink-0 text-c-pk shadow-sm">
 			<!-- Cloud Download SVG -->
 			<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -93,7 +108,7 @@
 	</div>
 
 	<!-- Part 2: Repository Star & Fork Metrics -->
-	<div class="flex-1 flex gap-3.5 items-center sm:border-r border-c-b1/60 sm:px-4">
+	<div class="flex-1 flex gap-3.5 items-center sm:border-r border-c-b1/60 sm:px-4 z-10 relative">
 		<div class="w-11 h-11 rounded-[12px] bg-amber-500/10 flex items-center justify-center shrink-0 text-amber-500 shadow-sm">
 			<!-- Star SVG -->
 			<svg class="w-5 h-5 fill-amber-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -117,7 +132,7 @@
 	</div>
 
 	<!-- Part 3: App Integrity & Sync Status -->
-	<div class="flex-1 flex gap-3.5 items-center sm:pl-6">
+	<div class="flex-1 flex gap-3.5 items-center sm:pl-6 z-10 relative">
 		<div class="w-11 h-11 rounded-[12px] bg-c-gn-l flex items-center justify-center shrink-0 text-c-gn shadow-sm">
 			<!-- Shield Check SVG -->
 			<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -139,3 +154,40 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	.glow-card {
+		position: relative;
+		overflow: hidden;
+	}
+	.glow-card::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(320px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(224, 79, 106, 0.08), transparent 75%);
+		pointer-events: none;
+		z-index: 0;
+		opacity: 0;
+		transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		border-radius: inherit;
+	}
+	.glow-card::after {
+		content: '';
+		position: absolute;
+		inset: -1.5px;
+		background: radial-gradient(200px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(224, 79, 106, 0.28), transparent 70%);
+		border-radius: inherit;
+		pointer-events: none;
+		z-index: 2;
+		opacity: 0;
+		transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		padding: 1.5px;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+	}
+	.glow-card:hover::before,
+	.glow-card:hover::after {
+		opacity: 1;
+	}
+</style>

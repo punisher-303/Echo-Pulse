@@ -29,6 +29,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="canonical" href="https://punisher-303.github.io/Echo-Pulse/" />
 </svelte:head>
 
 <main>

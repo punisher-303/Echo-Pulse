@@ -1,4 +1,6 @@
 <script>
+	import { onMount } from 'svelte';
+	import gsap from 'gsap';
 	import { base } from '$app/paths';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import SubNav from '$lib/components/SubNav.svelte';
@@ -16,6 +18,28 @@
 	import Footer from '$lib/components/Footer.svelte';
 
 	let repo = "punisher-303/Echo-Pulse";
+
+	onMount(() => {
+		// Hardware-accelerated dynamic reveal animations for a premium scroll experience
+		const reveals = document.querySelectorAll('.gsap-reveal');
+		reveals.forEach((el) => {
+			gsap.fromTo(el, 
+				{ opacity: 0, y: 35 },
+				{
+					opacity: 1,
+					y: 0,
+					duration: 0.85,
+					ease: 'power2.out',
+					scrollTrigger: {
+						trigger: el,
+						start: 'top 88%',
+						toggleActions: 'play none none none',
+						once: true
+					}
+				}
+			);
+		});
+	});
 </script>
 
 <svelte:head>
@@ -44,33 +68,37 @@
 			<Hero />
 			
 			<!-- Interactive Media Player Live Showcase -->
-			<div class="max-w-[1040px] mx-auto px-5 mb-12 z-20 relative">
+			<div class="max-w-[1040px] mx-auto px-5 mb-12 z-20 relative gsap-reveal">
 				<InteractivePlayer />
 			</div>
 
 			<!-- Integrated Counters and Stats Dashboard -->
-			<div class="max-w-[1040px] mx-auto px-5 mb-14 z-20 relative">
+			<div class="max-w-[1040px] mx-auto px-5 mb-14 z-20 relative gsap-reveal">
 				<MetricsDashboard repo={repo} fallbackVersion="v4.7.6" fallbackStars="2.1k+" fallbackForks="340" />
 			</div>
 		</div>
 
-		<RecognitionRow repo={repo} stars="2.1k+" />
+		<div class="gsap-reveal">
+			<RecognitionRow repo={repo} stars="2.1k+" />
+		</div>
 		
-		<div id="features" class="scroll-mt-[160px]">
+		<div id="features" class="scroll-mt-[160px] gsap-reveal">
 			<FeaturesGrid />
 		</div>
 
 		<div class="h-[1px] bg-c-b1 max-w-[1040px] mx-auto"></div>
 
-		<SpotifyCanvaShowcase />
+		<div class="gsap-reveal">
+			<SpotifyCanvaShowcase />
+		</div>
 		
-		<section id="screenshots" class="scroll-mt-[100px]">
+		<section id="screenshots" class="scroll-mt-[100px] gsap-reveal">
 			<Screenshots />
 		</section>
 
 		<div class="h-[1px] bg-c-b1 max-w-[1040px] mx-auto"></div>
 
-		<section id="releases" class="py-[84px] px-5 md:px-8 max-w-[1040px] mx-auto scroll-mt-[100px]">
+		<section id="releases" class="py-[84px] px-5 md:px-8 max-w-[1040px] mx-auto scroll-mt-[100px] gsap-reveal">
 			<div class="flex items-center justify-between mb-9">
 				<div class="flex items-center gap-2.5 font-mono text-[10px] tracking-[0.18em] uppercase text-c-t3">
 					<div class="w-[14px] h-[2px] bg-c-pk rounded-sm"></div>
@@ -89,11 +117,11 @@
 
 		<div class="h-[1px] bg-c-b1 max-w-[1040px] mx-auto"></div>
 
-		<div id="download" class="scroll-mt-[100px]">
+		<div id="download" class="scroll-mt-[100px] gsap-reveal">
 			<Download />
 		</div>
 
-		<div id="about" class="scroll-mt-[100px]">
+		<div id="about" class="scroll-mt-[100px] gsap-reveal">
 			<Support repoUrl="https://github.com/punisher-303/Echo-Pulse" githubUrl="https://github.com/punisher-303" />
 		</div>
 	</main>

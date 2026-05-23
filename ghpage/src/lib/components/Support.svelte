@@ -1,6 +1,21 @@
 <script>
 	export let githubUrl = 'https://github.com/punisher-303';
 	export let repoUrl = 'https://github.com/punisher-303/Echo-Pulse';
+
+	// Action to track pointer positions efficiently without triggering Svelte re-renders
+	function spotlight(node) {
+		const handleMouseMove = (e) => {
+			const rect = node.getBoundingClientRect();
+			node.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+			node.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+		};
+		node.addEventListener('mousemove', handleMouseMove, { passive: true });
+		return {
+			destroy() {
+				node.removeEventListener('mousemove', handleMouseMove);
+			}
+		};
+	}
 </script>
 
 <div class="h-[1px] bg-c-b1 max-w-[1040px] mx-auto"></div>
@@ -12,8 +27,8 @@
 	
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 		<!-- Keep the music playing -->
-		<div class="bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] p-7 flex flex-col justify-between">
-			<div>
+		<div use:spotlight class="bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] p-7 flex flex-col justify-between hover-3d-card group glow-card">
+			<div class="z-10 relative">
 				<h3 class="font-serif text-[22px] font-normal tracking-[-0.025em] text-c-t1 mb-3">
 					Keep the <em class="italic text-c-pk">music playing.</em>
 				</h3>
@@ -25,7 +40,7 @@
 				</p>
 			</div>
 			
-			<div class="flex flex-col gap-2.5">
+			<div class="flex flex-col gap-2.5 z-10 relative mt-4">
 				<a href="https://github.com/sponsors/punisher-303" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-4 py-3.5 rounded-[12px] no-underline bg-c-bg border-[1.5px] border-c-b2 hover:border-c-pk-m hover:bg-c-pk-l transition-all group">
 					<div class="flex items-center gap-3">
 						<svg class="w-5 h-5 text-c-pk shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -46,14 +61,16 @@
 		</div>
 
 		<!-- Get in touch -->
-		<div class="bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] p-7">
-			<h3 class="font-serif text-[22px] font-normal tracking-[-0.025em] text-c-t1 mb-3">
-				Get in <em class="italic text-c-pk">touch.</em>
-			</h3>
-			<p class="font-sans text-[13px] text-c-t2 leading-[1.7] mb-5">
-				Questions, bug reports, or feature ideas? I'm always happy to connect:
-			</p>
-			<div class="flex flex-col gap-2">
+		<div use:spotlight class="bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] p-7 hover-3d-card group glow-card">
+			<div class="z-10 relative">
+				<h3 class="font-serif text-[22px] font-normal tracking-[-0.025em] text-c-t1 mb-3">
+					Get in <em class="italic text-c-pk">touch.</em>
+				</h3>
+				<p class="font-sans text-[13px] text-c-t2 leading-[1.7] mb-5">
+					Questions, bug reports, or feature ideas? I'm always happy to connect:
+				</p>
+			</div>
+			<div class="flex flex-col gap-2 z-10 relative">
 				<a href="{githubUrl}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-4 py-3 rounded-[11px] no-underline bg-c-bg border-[1.5px] border-c-b2 hover:border-c-pk-m hover:bg-c-pk-l transition-all group">
 					<div class="flex items-center gap-2.5">
 						<svg class="w-5 h-5 text-neutral-700 group-hover:text-c-pk shrink-0 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -106,3 +123,40 @@
 		</div>
 	</div>
 </section>
+
+<style>
+	.glow-card {
+		position: relative;
+		overflow: hidden;
+	}
+	.glow-card::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(350px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(224, 79, 106, 0.07), transparent 75%);
+		pointer-events: none;
+		z-index: 0;
+		opacity: 0;
+		transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		border-radius: inherit;
+	}
+	.glow-card::after {
+		content: '';
+		position: absolute;
+		inset: -1.5px;
+		background: radial-gradient(180px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(224, 79, 106, 0.25), transparent 70%);
+		border-radius: inherit;
+		pointer-events: none;
+		z-index: 2;
+		opacity: 0;
+		transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		padding: 1.5px;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+	}
+	.glow-card:hover::before,
+	.glow-card:hover::after {
+		opacity: 1;
+	}
+</style>
