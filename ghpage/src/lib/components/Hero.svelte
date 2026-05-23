@@ -51,9 +51,9 @@
 	<!-- CTA buttons -->
 	<div class="rev d3 flex flex-wrap justify-center items-center gap-3.5 mb-6 relative z-10" class:in={mounted}>
 		<DownloadDropdown align="center" />
-		<a href="#download" class="inline-flex items-center justify-center gap-1.5 h-11 px-[22px] rounded-[10px] bg-transparent text-c-t2 border-[1.5px] border-c-b2 font-sans text-[14px] font-medium no-underline transition-all hover:text-c-t1 hover:border-c-b3 hover:bg-c-s2">
-			<span>Other Mirrors</span>
-			<i class="fa-solid fa-arrow-down-long text-[12px]"></i>
+		<a href="https://instagram.com/appuz.404" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 h-11 px-[22px] rounded-[10px] bg-transparent text-c-t2 border-[1.5px] border-c-b2 font-sans text-[14px] font-medium no-underline transition-all hover:text-c-t1 hover:border-c-b3 hover:bg-c-s2">
+			<i class="fa-brands fa-instagram text-[16px]"></i>
+			<span>Instagram</span>
 		</a>
 	</div>
 </section>
