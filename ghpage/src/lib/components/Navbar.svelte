@@ -36,6 +36,7 @@
 		<li><a href="{base}/#screenshots" class="text-c-t2 no-underline font-sans text-[13px] font-normal px-3 py-1.5 rounded-lg transition-colors hover:text-c-t1 hover:bg-c-s3">Screenshots</a></li>
 		<li><a href="{base}/#releases" class="text-c-t2 no-underline font-sans text-[13px] font-normal px-3 py-1.5 rounded-lg transition-colors hover:text-c-t1 hover:bg-c-s3">Releases</a></li>
 		<li><a href="{base}/#about" class="text-c-t2 no-underline font-sans text-[13px] font-normal px-3 py-1.5 rounded-lg transition-colors hover:text-c-t1 hover:bg-c-s3">Support</a></li>
+		<li><a href="{base}/issues" class="text-c-t2 no-underline font-sans text-[13px] font-normal px-3 py-1.5 rounded-lg transition-colors hover:text-c-t1 hover:bg-c-s3">Issues</a></li>
 		<li>
 			<a href="https://github.com/punisher-303/Echo-Pulse" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-9 h-9 rounded-[10px] bg-c-s2 hover:bg-c-pk text-c-t2 hover:text-white transition-all duration-150 ml-2" aria-label="GitHub Repository">
 				<i class="fa-brands fa-github text-[18px]"></i>
@@ -59,6 +60,7 @@
 	<a href="{base}/#screenshots" class="block text-c-t2 no-underline font-sans text-[15px] py-3 border-b border-c-b1 hover:text-c-t1 transition-colors" on:click={closeMenu}>Screenshots</a>
 	<a href="{base}/#releases" class="block text-c-t2 no-underline font-sans text-[15px] py-3 border-b border-c-b1 hover:text-c-t1 transition-colors" on:click={closeMenu}>Releases</a>
 	<a href="{base}/#about" class="block text-c-t2 no-underline font-sans text-[15px] py-3 border-b border-c-b1 hover:text-c-t1 transition-colors" on:click={closeMenu}>Support</a>
+	<a href="{base}/issues" class="block text-c-t2 no-underline font-sans text-[15px] py-3 border-b border-c-b1 hover:text-c-t1 transition-colors" on:click={closeMenu}>Issues</a>
 	<a href="https://github.com/punisher-303/Echo-Pulse" target="_blank" rel="noopener noreferrer" class="block text-c-t2 no-underline font-sans text-[15px] py-3 mt-1 hover:text-c-pk transition-colors" on:click={closeMenu}>
 		<i class="fa-brands fa-github mr-2"></i> GitHub Repository
 	</a>
