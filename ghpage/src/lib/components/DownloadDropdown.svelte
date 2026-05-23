@@ -3,7 +3,7 @@
 	import { fetchUpdateConfig } from '$lib/utils/github';
 
 	// Props using Svelte 5 $props() rune
-	let { align = 'center', buttonClass = '' } = $props();
+	let { align = 'center', buttonClass = '', direction = 'down' } = $props();
 
 	let isOpen = $state(false);
 	let dropdownEl = $state(null);
@@ -91,7 +91,7 @@
 
 	{#if isOpen}
 		<div
-			class="absolute z-50 mt-2.5 w-[300px] rounded-xl border border-c-b1 bg-white/95 backdrop-blur-xl shadow-sh-3 p-2 transition-all origin-top-right transform scale-100 opacity-100 {align === 'right' ? 'right-0' : align === 'left' ? 'left-0' : 'left-1/2 -translate-x-1/2'}"
+			class="absolute z-50 w-[300px] rounded-xl border border-c-b1 bg-white/95 backdrop-blur-xl shadow-sh-3 p-2 transition-all transform scale-100 opacity-100 {align === 'right' ? 'right-0' : align === 'left' ? 'left-0' : 'left-1/2 -translate-x-1/2'} {direction === 'up' ? 'bottom-full mb-2.5 origin-bottom' : 'mt-2.5 origin-top'}"
 			role="menu"
 		>
 			<div class="flex flex-col gap-1">

@@ -48,15 +48,15 @@
 		Download
 	</div>
 	
-	<div use:spotlight class="bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] overflow-hidden shadow-sh-md glow-card-outer">
-		<div class="px-6 py-10 md:py-11 md:px-11 border-b border-c-b1 text-center bg-gradient-to-b from-c-pk-l to-c-s1 flex flex-col items-center z-10 relative">
+	<div use:spotlight class="bg-c-s1 border-[1.5px] border-c-b1 rounded-[20px] shadow-sh-md glow-card-outer">
+		<div class="px-6 py-10 md:py-11 md:px-11 border-b border-c-b1 text-center bg-gradient-to-b from-c-pk-l to-c-s1 flex flex-col items-center z-30 relative rounded-t-[19px]">
 			<h2 class="font-serif text-[clamp(28px,5vw,48px)] font-light tracking-[-0.04em] text-c-t1 mb-1.5">
 				Download <em class="italic text-c-pk">Echo Pulse</em> {#if release}{release.tag_name}{/if}
 			</h2>
 			<p class="font-sans text-[13px] text-c-t2 mb-6">
 				Free. Always. No account, no sign-up, no waiting.
 			</p>
-			<DownloadDropdown align="center" buttonClass="px-8 h-12 text-[15px]" />
+			<DownloadDropdown align="center" buttonClass="px-8 h-12 text-[15px]" direction="down" />
 		</div>
 		
 		<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
@@ -106,7 +106,7 @@
 			</a>
 		</div>
 		
-		<div class="px-6 py-4 border-t border-c-b1 font-mono text-[10px] text-c-t3 leading-[1.6] z-10 relative bg-[#faf8f4]/30">
+		<div class="px-6 py-4 border-t border-c-b1 font-mono text-[10px] text-c-t3 leading-[1.6] z-10 relative bg-[#faf8f4]/30 rounded-b-[19px]">
 			Verify download at <a href="https://github.com/{repo}/releases" target="_blank" rel="noopener noreferrer" class="text-c-t2 underline underline-offset-2 hover:text-c-pk">github.com/{repo}</a><br>
 			Made with ♥ by <a href="https://github.com/punisher-303" target="_blank" rel="noopener noreferrer" class="text-c-t2 underline underline-offset-2 hover:text-c-pk">Anand</a> · Part of <a href="{base}/" class="text-c-t2 underline underline-offset-2 hover:text-c-pk">Echo Pulse Portfolio</a>
 		</div>
