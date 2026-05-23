@@ -17,7 +17,6 @@
 	import Support from '$lib/components/Support.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import SupportWidget from '$lib/components/SupportWidget.svelte';
-	import LiveVisitorCounter from '$lib/components/LiveVisitorCounter.svelte';
 
 	let repo = "punisher-303/Echo-Pulse";
 
@@ -131,6 +130,4 @@
 	<Footer />
 	
 	<SupportWidget />
-	
-	<LiveVisitorCounter />
 </div>
