@@ -93,7 +93,7 @@ jobs:
         run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/EchoPulse.exe" -NewName "echopulse.exe"
 
       - name: ZIP Windows build
-        run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64.zip.zip
+        run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination  ECHOPULS/build/windows/x64/echo_pulse_windows_x64.zip
 
       - name: Upload Artifacts (Windows+Android)
         uses: actions/upload-artifact@v4
