@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import DownloadDropdown from '$lib/components/DownloadDropdown.svelte';
 	
 	let mounted = false;
 	
@@ -26,7 +27,7 @@
 	.d3 { transition-delay: .26s; }
 </style>
 
-<section id="overview" class="pt-[56px] pb-[88px] px-5 md:px-8 text-center max-w-[760px] mx-auto relative">
+<section id="overview" class="pt-[56px] pb-[88px] px-5 md:px-8 text-center max-w-[760px] mx-auto relative z-30">
 	<div class="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[360px] bg-[radial-gradient(ellipse,rgba(224,79,106,0.06)_0%,transparent_70%)] pointer-events-none z-0"></div>
 	
 	<p class="rev font-mono text-[10px] tracking-[0.18em] uppercase text-c-pk mb-5 inline-flex items-center gap-2.5" class:in={mounted}>
@@ -48,15 +49,11 @@
 	</p>
 	
 	<!-- CTA buttons -->
-	<div class="rev d3 flex flex-wrap justify-center gap-2.5 mb-6 relative z-10" class:in={mounted}>
-		<a href="#download" class="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-[10px] bg-c-pk text-white font-sans text-[14px] font-medium no-underline transition-all hover:opacity-90 hover:-translate-y-[2px] shadow-[0_2px_14px_rgba(224,79,106,0.32)] hover:shadow-[0_6px_22px_rgba(224,79,106,0.34)]">
-			Download for Android
-		</a>
-		<a href="#download" class="inline-flex items-center justify-center gap-2 h-11 px-[22px] rounded-[10px] bg-transparent text-c-t2 border-[1.5px] border-c-b2 font-sans text-[14px] no-underline transition-all hover:text-c-t1 hover:border-c-b3 hover:bg-c-s2">
-			Windows
-		</a>
-		<a href="#download" class="inline-flex items-center justify-center gap-2 h-11 px-[22px] rounded-[10px] bg-transparent text-c-t2 border-[1.5px] border-c-b2 font-sans text-[14px] no-underline transition-all hover:text-c-t1 hover:border-c-b3 hover:bg-c-s2">
-			Linux
+	<div class="rev d3 flex flex-wrap justify-center items-center gap-3.5 mb-6 relative z-10" class:in={mounted}>
+		<DownloadDropdown align="center" />
+		<a href="#download" class="inline-flex items-center justify-center gap-1.5 h-11 px-[22px] rounded-[10px] bg-transparent text-c-t2 border-[1.5px] border-c-b2 font-sans text-[14px] font-medium no-underline transition-all hover:text-c-t1 hover:border-c-b3 hover:bg-c-s2">
+			<span>Other Mirrors</span>
+			<i class="fa-solid fa-arrow-down-long text-[12px]"></i>
 		</a>
 	</div>
 </section>
