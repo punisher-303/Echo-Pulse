@@ -1,5 +1,8 @@
 name: "Apple Build & Release"
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   workflow_dispatch:
     inputs:
@@ -16,7 +19,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -25,7 +28,7 @@ jobs:
           channel: 'stable'
 
       - name: Clone Repository
-        run: git clone -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
+        run: git clone -b SpotifyCanva https://${{ secrets.SECRET_KEY }}@github.com/punisher-303/ECHOPULS.git
 
       - name: Install Dependencies
         run: cd ECHOPULS && flutter pub get
@@ -37,7 +40,7 @@ jobs:
           if [ -z "$ver" ]; then echo "version not found in pubspec.yaml"; exit 1; fi
           echo "VERSION=$ver" >> $GITHUB_ENV
           echo "version=$ver" >> $GITHUB_OUTPUT
-      
+
       - name: Set build number
         run: |
           BUILD_NUM="${{ github.event.inputs.build_number }}"
@@ -46,7 +49,6 @@ jobs:
 
       - name: Configure macOS Entitlements
         run: |
-          # Apply Hardened Runtime and Sandbox configurations for macOS compatibility.
           for f in ECHOPULS/macos/Runner/DebugProfile.entitlements ECHOPULS/macos/Runner/Release.entitlements; do
             /usr/libexec/PlistBuddy -c "Delete :com.apple.security.app-sandbox" "$f" 2>/dev/null || true
             /usr/libexec/PlistBuddy -c "Add :com.apple.security.app-sandbox bool false" "$f"
@@ -76,7 +78,6 @@ jobs:
       - name: Build macOS (Intel)
         run: |
           cd ECHOPULS
-          # Clean build to ensure fresh architecture
           flutter clean
           flutter pub get
           arch -x86_64 flutter build macos --release --build-number ${{ env.BUILDVERSION }}
@@ -94,7 +95,7 @@ jobs:
           zip -ry ../../../../../echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip "EchoPulse.app"
 
       - name: Upload Artifacts (macOS)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: echo_pulse_macos
           path: |
@@ -112,62 +113,7 @@ jobs:
             ECHOPULS/echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
             ECHOPULS/echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
           tag: v${{ env.VERSION }}+${{ env.BUILDVERSION }}
-          token: ${{secrets.SECRET_KEY}}
+          token: ${{ secrets.SECRET_KEY }}
           allowUpdates: true
           omitBody: true
           prerelease: true
-
-#   ios_build:
-#     name: iOS Build
-#     runs-on: macos-latest
-#     steps:
-#       - name: Checkout Repository
-#         uses: actions/checkout@v4
-# 
-#       - name: Setup Flutter
-#         uses: subosito/flutter-action@v2
-#         with:
-#           flutter-version: '3.35.4'
-#           channel: 'stable'
-# 
-#       - name: Clone Repository
-#         run: git clone -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
-# 
-#       - name: Install Dependencies
-#         run: cd ECHOPULS && flutter pub get
-# 
-#       - name: Extract version from pubspec.yaml
-#         run: |
-#           ver=$(grep -m1 -E '^version:\s*' ECHOPULS/pubspec.yaml | awk '{print $2}' | cut -d'+' -f1)
-#           if [ -z "$ver" ]; then echo "version not found in pubspec.yaml"; exit 1; fi
-#           echo "VERSION=$ver" >> $GITHUB_ENV
-#       
-#       - name: Set build number
-#         run: |
-#           BUILD_NUM="${{ github.event.inputs.build_number }}"
-#           if [ -z "$BUILD_NUM" ]; then BUILD_NUM="2111"; fi
-#           echo "BUILDVERSION=$BUILD_NUM" >> $GITHUB_ENV
-# 
-#       - name: Build iOS (Unsigned)
-#         run: |
-#           cd ECHOPULS
-#           # Force iOS 13.0 deployment target to avoid plugin conflicts (OneSignal/Firebase)
-#           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 13.0/g' ios/Runner.xcodeproj/project.pbxproj
-#           
-#           flutter clean
-#           flutter pub get
-#           flutter build ios --release --no-codesign --build-number ${{ env.BUILDVERSION }}
-# 
-#       - name: Package iOS (IPA)
-#         run: |
-#           # Professional IPA packaging for Sideloadly/AltStore
-#           mkdir -p Payload
-#           APP_DIR=$(find ECHOPULS/build/ios/iphoneos -name "*.app" | head -n 1)
-#           cp -r "$APP_DIR" Payload/
-#           zip -vr echo_pulse_ios_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.ipa Payload
-# 
-#       - name: Upload Artifacts (iOS)
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: echo_pulse_ios
-#           path: echo_pulse_ios_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.ipa
