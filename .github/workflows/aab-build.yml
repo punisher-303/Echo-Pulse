@@ -1,0 +1,96 @@
+name: "Build & Release AAB"
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: 'Build number'
+        required: true
+        default: '2111'
+
+jobs:
+  build:
+    name: Android AAB Build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Setup-Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'oracle'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.4'
+          channel: 'stable'
+
+      - name: Clone Repository
+        run: git clone -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
+
+      - name: Install Dependencies
+        run: cd ECHOPULS && flutter pub get
+
+      - name: Extract version from pubspec.yaml
+        shell: pwsh
+        run: |
+          $vLine = Select-String -Path ECHOPULS\pubspec.yaml -Pattern '^version:\s*(\S+)' | Select-Object -First 1
+          if (-not $vLine) { Write-Error 'version not found in pubspec.yaml'; exit 1 }
+          $ver = $vLine.Matches[0].Groups[1].Value.Split('+')[0]
+          "VERSION=$ver" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Set build number
+        shell: pwsh
+        run: |
+          $buildNumber = "${{ github.event.inputs.build_number }}"
+          if (-not $buildNumber) { $buildNumber = "2111" }
+          Write-Host "Setting BUILDVERSION to: $buildNumber"
+          "BUILDVERSION=$buildNumber" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Create keystore file
+        run: |
+          $b64 = "${{ secrets.KEY_STORE }}"
+          $filename = "./ECHOPULS/android/Echopulse.jks"
+          $bytes = [Convert]::FromBase64String($b64)
+          [IO.File]::WriteAllBytes($filename, $bytes)
+
+      - name: Create Keystore properties
+        run: |
+          echo keyPassword=${{ secrets.KEY_PASSWORD }} > ./ECHOPULS/android/key.properties
+          echo storePassword=${{ secrets.STORE_PASSWORD }} >> ./ECHOPULS/android/key.properties
+          echo keyAlias=${{ secrets.KEY_ALIAS }} >> ./ECHOPULS/android/key.properties
+
+      - name: Build Android AAB
+        shell: pwsh
+        run: |
+          Write-Host "Building AAB with build number: $env:BUILDVERSION"
+          cd ECHOPULS
+          flutter build appbundle --dart-define=SP_DC_COOKIE="${{ secrets.SP_DC_COOKIE }}" --release --build-number $env:BUILDVERSION
+
+      - name: Rename Android AAB
+        run: |
+          Rename-Item -Path "ECHOPULS/build/app/outputs/bundle/release/app-release.aab" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab"
+
+      - name: Upload Artifacts (AAB)
+        uses: actions/upload-artifact@v5
+        with:
+          name: Release-AAB
+          path: |
+            ECHOPULS/build/app/outputs/bundle/release/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab
+
+      - name: Create Release (AAB)
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: |
+            ECHOPULS/build/app/outputs/bundle/release/echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.aab
+          tag: v${{ env.VERSION }}+${{ env.BUILDVERSION }}-aab
+          token: ${{secrets.SECRET_KEY}}
+          allowUpdates: true
+          omitBody: true
+          prerelease: true
