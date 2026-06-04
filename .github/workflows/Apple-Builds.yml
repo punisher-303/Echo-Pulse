@@ -59,9 +59,11 @@ jobs:
           done
 
       - name: Build macOS (ARM64)
+        env:
+          SP_DC_SECRET: ${{ secrets.SP_DC_COOKIE }}
         run: |
           cd ECHOPULS
-          flutter build macos --dart-define=SP_DC_COOKIE="${{ secrets.SP_DC_COOKIE }}" --release --build-number ${{ env.BUILDVERSION }}
+          flutter build macos --dart-define=SP_DC_COOKIE="$SP_DC_SECRET" --release --build-number ${{ env.BUILDVERSION }}
 
       - name: Package macOS (ARM64)
         run: |
@@ -76,11 +78,13 @@ jobs:
           zip -ry ../../../../../echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip "EchoPulse.app"
 
       - name: Build macOS (Intel)
+        env:
+          SP_DC_SECRET: ${{ secrets.SP_DC_COOKIE }}
         run: |
           cd ECHOPULS
           flutter clean
           flutter pub get
-          arch -x86_64 flutter build macos --dart-define=SP_DC_COOKIE="${{ secrets.SP_DC_COOKIE }}" --release --build-number ${{ env.BUILDVERSION }}
+          arch -x86_64 flutter build macos --dart-define=SP_DC_COOKIE="$SP_DC_SECRET" --release --build-number ${{ env.BUILDVERSION }}
 
       - name: Package macOS (Intel)
         run: |

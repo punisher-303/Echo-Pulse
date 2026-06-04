@@ -68,10 +68,12 @@ jobs:
 
       - name: Build Android AAB
         shell: pwsh
+        env:
+          SP_DC_SECRET: ${{ secrets.SP_DC_COOKIE }}
         run: |
           Write-Host "Building AAB with build number: $env:BUILDVERSION"
           cd ECHOPULS
-          flutter build appbundle --dart-define=SP_DC_COOKIE="${{ secrets.SP_DC_COOKIE }}" --release --build-number $env:BUILDVERSION
+          flutter build appbundle --dart-define=SP_DC_COOKIE="$env:SP_DC_SECRET" --release --build-number $env:BUILDVERSION
 
       - name: Rename Android AAB
         run: |

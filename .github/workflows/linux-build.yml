@@ -47,7 +47,9 @@ jobs:
           echo "BUILDVERSION=$BUILD_NUM" >> $GITHUB_ENV
 
       - name: Build Linux App
-        run: cd ECHOPULS && flutter build linux --dart-define=SP_DC_COOKIE="${{ secrets.SP_DC_COOKIE }}" --release --build-number $BUILDVERSION
+        env:
+          SP_DC_SECRET: ${{ secrets.SP_DC_COOKIE }}
+        run: cd ECHOPULS && flutter build linux --dart-define=SP_DC_COOKIE="$SP_DC_SECRET" --release --build-number $BUILDVERSION
 
       - name: Tar Linux App
         run: |
