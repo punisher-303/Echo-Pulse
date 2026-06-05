@@ -68,7 +68,6 @@ jobs:
 
       - name: Build Android AAB
         shell: pwsh
-        env:
         run: |
           Write-Host "Building AAB with build number: $env:BUILDVERSION"
           cd ECHOPULS

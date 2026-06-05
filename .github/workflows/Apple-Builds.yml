@@ -59,7 +59,6 @@ jobs:
           done
 
       - name: Build macOS (ARM64)
-        env:
         run: |
           cd ECHOPULS
           flutter build macos --release --build-number ${{ env.BUILDVERSION }}
@@ -77,7 +76,6 @@ jobs:
           zip -ry ../../../../../echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip "EchoPulse.app"
 
       - name: Build macOS (Intel)
-        env:
         run: |
           cd ECHOPULS
           flutter clean

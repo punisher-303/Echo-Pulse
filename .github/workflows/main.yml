@@ -68,7 +68,6 @@ jobs:
 
       - name: Build Android APKs
         shell: pwsh
-        env:
         run: |
           Write-Host "Building with build number: $env:BUILDVERSION"
           cd ECHOPULS
@@ -91,7 +90,6 @@ jobs:
           Rename-Item -Path "ECHOPULS/build/app/outputs/flutter-apk/app-x86_64-release.apk" -NewName "echo_pulse_android_v${{ env.VERSION }}+${{ env.BUILDVERSION }}_x86_64.apk"
 
       - name: Build Windows App
-        env:
         run: cd ECHOPULS && flutter build windows --release --build-number ${{ env.BUILDVERSION }}
 
       - name: Rename Windows binary
@@ -163,7 +161,6 @@ jobs:
           echo "BUILDVERSION=$BUILD_NUM" >> $GITHUB_ENV
 
       - name: Build Linux App
-        env:
         run: cd ECHOPULS && flutter build linux --release --build-number $BUILDVERSION
 
       - name: Tar Linux App

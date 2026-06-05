@@ -1,5 +1,8 @@
 name: "Linux Build & Release"
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   workflow_dispatch:
     inputs:
@@ -14,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -47,7 +50,6 @@ jobs:
           echo "BUILDVERSION=$BUILD_NUM" >> $GITHUB_ENV
 
       - name: Build Linux App
-        env:
         run: cd ECHOPULS && flutter build linux --release --build-number $BUILDVERSION
 
       - name: Tar Linux App
@@ -56,7 +58,7 @@ jobs:
           tar -czf ../echo_pulse_linux_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.tar.gz .
 
       - name: Upload Artifacts (Linux)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: echo_pulse_linux
           path: ECHOPULS/build/linux/x64/release/echo_pulse_linux_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.tar.gz
