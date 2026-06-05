@@ -69,11 +69,10 @@ jobs:
       - name: Build Android APKs
         shell: pwsh
         env:
-          SP_DC_SECRET: ${{ secrets.SP_DC_COOKIE }}
         run: |
           Write-Host "Building with build number: $env:BUILDVERSION"
           cd ECHOPULS
-          flutter build apk --dart-define=SP_DC_COOKIE="$env:SP_DC_SECRET" --release --build-number $env:BUILDVERSION
+          flutter build apk --release --build-number $env:BUILDVERSION
 
       - name: Verify Sign (APK)
         run: |
@@ -93,8 +92,7 @@ jobs:
 
       - name: Build Windows App
         env:
-          SP_DC_SECRET: ${{ secrets.SP_DC_COOKIE }}
-        run: cd ECHOPULS && flutter build windows --dart-define=SP_DC_COOKIE="$env:SP_DC_SECRET" --release --build-number ${{ env.BUILDVERSION }}
+        run: cd ECHOPULS && flutter build windows --release --build-number ${{ env.BUILDVERSION }}
 
       - name: Rename Windows binary
         run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/EchoPulse.exe" -NewName "echopulse.exe"
@@ -166,8 +164,7 @@ jobs:
 
       - name: Build Linux App
         env:
-          SP_DC_SECRET: ${{ secrets.SP_DC_COOKIE }}
-        run: cd ECHOPULS && flutter build linux --dart-define=SP_DC_COOKIE="$SP_DC_SECRET" --release --build-number $BUILDVERSION
+        run: cd ECHOPULS && flutter build linux --release --build-number $BUILDVERSION
 
       - name: Tar Linux App
         run: |

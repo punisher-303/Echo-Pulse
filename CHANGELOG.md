@@ -1,3 +1,21 @@
+## [4.7.8] - 2026-06-06
+
+### Added
+
+- **Global Spotify Canvas**: Introduced a high-performance background video player that seamlessly plays Spotify Canvas visuals behind your music and lyrics.
+- **Lyrics Video Overlay**: Added a balanced dark transparency over the Canvas video on the lyrics screen, ensuring text readability while maintaining visual aesthetics.
+
+### Changed
+
+- **Canvas Singleton Architecture**: Rebuilt the Canvas video player to use a single global instance. This drastically improves memory efficiency, saves battery, and ensures smooth background pausing.
+- **Smart UI Canvas Layouts**: The album art and background lighting now dynamically adjust and snap to perfect alignments based on whether the Canvas video is turned on or off.
+
+### Fixed
+
+- **Lyrics Search Duplicates**: Fixed a bug where single-track releases duplicated the song title in the auto-search query, which previously caused lyrics plugins to fail.
+- **Hot Restart Integrity**: Resolved critical application crashes caused by multiple stray native threads persisting across Flutter hot restarts.
+
+
 ## [4.7.7] - 2026-05-10
 
 ### Added
@@ -380,3 +398,4 @@
 
 - Resolved issues with YouTube streaming.
 - Addressed bugs related to YouTube playlists.
+

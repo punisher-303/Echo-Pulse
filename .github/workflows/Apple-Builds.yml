@@ -60,10 +60,9 @@ jobs:
 
       - name: Build macOS (ARM64)
         env:
-          SP_DC_SECRET: ${{ secrets.SP_DC_COOKIE }}
         run: |
           cd ECHOPULS
-          flutter build macos --dart-define=SP_DC_COOKIE="$SP_DC_SECRET" --release --build-number ${{ env.BUILDVERSION }}
+          flutter build macos --release --build-number ${{ env.BUILDVERSION }}
 
       - name: Package macOS (ARM64)
         run: |
@@ -79,12 +78,11 @@ jobs:
 
       - name: Build macOS (Intel)
         env:
-          SP_DC_SECRET: ${{ secrets.SP_DC_COOKIE }}
         run: |
           cd ECHOPULS
           flutter clean
           flutter pub get
-          arch -x86_64 flutter build macos --dart-define=SP_DC_COOKIE="$SP_DC_SECRET" --release --build-number ${{ env.BUILDVERSION }}
+          arch -x86_64 flutter build macos --release --build-number ${{ env.BUILDVERSION }}
 
       - name: Package macOS (Intel)
         run: |
