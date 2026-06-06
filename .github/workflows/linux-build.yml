@@ -50,7 +50,7 @@ jobs:
           echo "BUILDVERSION=$BUILD_NUM" >> $GITHUB_ENV
 
       - name: Build Linux App
-        run: cd ECHOPULS && flutter build linux --release --build-number $BUILDVERSION
+        run: cd ECHOPULS && flutter build linux --release --build-number $BUILDVERSION --no-tree-shake-icons
 
       - name: Tar Linux App
         run: |

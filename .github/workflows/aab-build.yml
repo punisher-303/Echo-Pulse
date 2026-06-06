@@ -71,7 +71,7 @@ jobs:
         run: |
           Write-Host "Building AAB with build number: $env:BUILDVERSION"
           cd ECHOPULS
-          flutter build appbundle --release --build-number $env:BUILDVERSION
+          flutter build appbundle --release --build-number $env:BUILDVERSION --no-tree-shake-icons
 
       - name: Rename Android AAB
         run: |
