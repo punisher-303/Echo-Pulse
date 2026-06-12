@@ -63,13 +63,20 @@ jobs:
           cd ECHOPULS
           flutter build macos --release --build-number ${{ env.BUILDVERSION }} --no-tree-shake-icons
 
-      - name: Package macOS (Universal)
+      - name: Package macOS (Separate Architectures)
         run: |
           cd ECHOPULS/build/macos/Build/Products/Release
           APP_PATH=$(ls -d *.app | head -n 1)
-          mv "$APP_PATH" "EchoPulse.app"
           
-          find "EchoPulse.app/Contents/Frameworks" -type f | while read -r lib; do
+          # Duplicate for thinning
+          cp -R "$APP_PATH" "EchoPulse-ARM64.app"
+          cp -R "$APP_PATH" "EchoPulse-Intel.app"
+          
+          # Thin to ARM64
+          find "EchoPulse-ARM64.app" -type f | while read -r lib; do
+            if file "$lib" | grep -q "Mach-O universal binary"; then
+              lipo -thin arm64 "$lib" -output "$lib" || true
+            fi
             if file "$lib" | grep -q "Mach-O"; then
               BAD_ZLIB=$(otool -L "$lib" 2>/dev/null | grep "/opt/homebrew/.*/libz.*\.dylib" | awk '{print $1}' || true)
               if [ ! -z "$BAD_ZLIB" ]; then
@@ -80,27 +87,60 @@ jobs:
             fi
           done
           
+          # Thin to Intel (x86_64)
+          find "EchoPulse-Intel.app" -type f | while read -r lib; do
+            if file "$lib" | grep -q "Mach-O universal binary"; then
+              lipo -thin x86_64 "$lib" -output "$lib" || true
+            fi
+            if file "$lib" | grep -q "Mach-O"; then
+              BAD_ZLIB=$(otool -L "$lib" 2>/dev/null | grep "/opt/homebrew/.*/libz.*\.dylib" | awk '{print $1}' || true)
+              if [ ! -z "$BAD_ZLIB" ]; then
+                for bad_path in $BAD_ZLIB; do
+                  install_name_tool -change "$bad_path" "/usr/lib/libz.1.dylib" "$lib"
+                done
+              fi
+            fi
+          done
+          
+          # Rename inner apps back to normal names for DMG so user sees EchoPulse.app
+          mv "EchoPulse-ARM64.app" "EchoPulse.app"
           codesign --sign - --force --deep "EchoPulse.app"
-          mkdir -p dmg_temp
-          cp -R "EchoPulse.app" dmg_temp/
-          ln -s /Applications dmg_temp/Applications
-          hdiutil create -volname "EchoPulse" -srcfolder dmg_temp -ov -format UDZO ../../../../../echo_pulse_macos_universal_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
-          zip -ry ../../../../../echo_pulse_macos_universal_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip "EchoPulse.app"
+          mkdir -p dmg_temp_arm64
+          cp -R "EchoPulse.app" dmg_temp_arm64/
+          ln -s /Applications dmg_temp_arm64/Applications
+          hdiutil create -volname "EchoPulse" -srcfolder dmg_temp_arm64 -ov -format UDZO ../../../../../echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+          zip -ry ../../../../../echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip "EchoPulse.app"
+          rm -rf "EchoPulse.app"
+
+          mv "EchoPulse-Intel.app" "EchoPulse.app"
+          codesign --sign - --force --deep "EchoPulse.app"
+          mkdir -p dmg_temp_intel
+          cp -R "EchoPulse.app" dmg_temp_intel/
+          ln -s /Applications dmg_temp_intel/Applications
+          hdiutil create -volname "EchoPulse" -srcfolder dmg_temp_intel -ov -format UDZO ../../../../../echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+          zip -ry ../../../../../echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip "EchoPulse.app"
+          rm -rf "EchoPulse.app"
+
+
 
       - name: Upload Artifacts (macOS)
         uses: actions/upload-artifact@v5
         with:
           name: echo_pulse_macos
           path: |
-            ECHOPULS/echo_pulse_macos_universal_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
-            ECHOPULS/echo_pulse_macos_universal_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
+            ECHOPULS/echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+            ECHOPULS/echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
+            ECHOPULS/echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+            ECHOPULS/echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
 
       - name: Create Release (Apple)
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            ECHOPULS/echo_pulse_macos_universal_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
-            ECHOPULS/echo_pulse_macos_universal_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
+            ECHOPULS/echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+            ECHOPULS/echo_pulse_macos_arm64_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
+            ECHOPULS/echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.dmg
+            ECHOPULS/echo_pulse_macos_intel_v${{ env.VERSION }}+${{ env.BUILDVERSION }}.zip
           tag: v${{ env.VERSION }}+${{ env.BUILDVERSION }}
           token: ${{ secrets.SECRET_KEY }}
           allowUpdates: true
