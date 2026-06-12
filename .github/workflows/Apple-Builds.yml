@@ -68,6 +68,18 @@ jobs:
           cd ECHOPULS/build/macos/Build/Products/Release
           APP_PATH=$(ls -d *.app | head -n 1)
           mv "$APP_PATH" "EchoPulse.app"
+          
+          find "EchoPulse.app/Contents/Frameworks" -type f | while read -r lib; do
+            if file "$lib" | grep -q "Mach-O"; then
+              BAD_ZLIB=$(otool -L "$lib" 2>/dev/null | grep "/opt/homebrew/.*/libz.*\.dylib" | awk '{print $1}' || true)
+              if [ ! -z "$BAD_ZLIB" ]; then
+                for bad_path in $BAD_ZLIB; do
+                  install_name_tool -change "$bad_path" "/usr/lib/libz.1.dylib" "$lib"
+                done
+              fi
+            fi
+          done
+          
           codesign --sign - --force --deep "EchoPulse.app"
           mkdir -p dmg_temp
           cp -R "EchoPulse.app" dmg_temp/
@@ -87,6 +99,18 @@ jobs:
           cd ECHOPULS/build/macos/Build/Products/Release
           APP_PATH=$(ls -d *.app | head -n 1)
           mv "$APP_PATH" "EchoPulse.app"
+          
+          find "EchoPulse.app/Contents/Frameworks" -type f | while read -r lib; do
+            if file "$lib" | grep -q "Mach-O"; then
+              BAD_ZLIB=$(otool -L "$lib" 2>/dev/null | grep "/opt/homebrew/.*/libz.*\.dylib" | awk '{print $1}' || true)
+              if [ ! -z "$BAD_ZLIB" ]; then
+                for bad_path in $BAD_ZLIB; do
+                  install_name_tool -change "$bad_path" "/usr/lib/libz.1.dylib" "$lib"
+                done
+              fi
+            fi
+          done
+          
           codesign --sign - --force --deep "EchoPulse.app"
           mkdir -p dmg_temp
           cp -R "EchoPulse.app" dmg_temp/
