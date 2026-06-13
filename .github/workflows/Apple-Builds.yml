@@ -102,6 +102,9 @@ jobs:
             fi
           done
           
+          # Remove original universal app to avoid nesting during mv
+          rm -rf "$APP_PATH"
+          
           # Rename inner apps back to normal names for DMG so user sees EchoPulse.app
           mv "EchoPulse-ARM64.app" "EchoPulse.app"
           codesign --sign - --force --deep "EchoPulse.app"
