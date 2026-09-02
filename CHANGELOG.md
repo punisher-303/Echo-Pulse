@@ -1,3 +1,13 @@
+## [4.8.1] - 2026-09-02
+
+### Added
+
+- **Global Video**: Youtube video also added in background toggle mod.
+
+### Changed
+
+- **Overall**: Fic Bugs
+
 ## [4.8.0] - 2026-06-06
 
 ### Added
