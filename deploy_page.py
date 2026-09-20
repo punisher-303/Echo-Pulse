@@ -21,6 +21,14 @@ import signal
 import platform
 from datetime import datetime
 
+# Ensure stdout and stderr support emojis on Windows console
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # ---------- CONFIG ----------
 BUILD_SOURCE = Path("ghpage")
 BUILD_DIR = BUILD_SOURCE / "build"

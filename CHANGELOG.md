@@ -1,12 +1,19 @@
-## [4.8.1] - 2026-09-02
+## [4.8.1] - 2026-09-20
 
 ### Added
 
-- **Global Video**: Youtube video also added in background toggle mod.
+- **Home Screen Carousel**: Restored the dynamic vertical moving cards (Carousel Widget) to the top of the Explore screen to provide a richer music discovery experience.
+- **Smart Chart Thumbnails**: The chart posters now automatically fetch and display the high-quality album artwork from the top trending track if the chart itself lacks a default thumbnail image.
 
 ### Changed
 
-- **Overall**: Fic Bugs
+- **Seamless Video Blending**: Upgraded the Spotify Canvas background player with a smooth, multi-stop linear gradient overlay. This eliminates the sharp horizontal cut-off line behind the player controls for a flawless fullscreen visual.
+- **Reactive Home Plugins**: Overhauled the state management on the Explore screen to instantly react and display content the moment background plugins finish loading.
+
+### Fixed
+
+- **Fatal Settings Crash**: Resolved a critical, silent startup crash in the settings manager caused by misaligned array indices that prevented the home screen from ever loading.
+- **Empty Chart Posters**: Fixed a bug where vertical chart cards would get stuck displaying a small "b" placeholder icon due to network race conditions.
 
 ## [4.8.0] - 2026-06-06
 
