@@ -1,0 +1,74 @@
+name: "Windows Build & Release"
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: 'Build number'
+        required: true
+        default: '2111'
+
+jobs:
+  windows_build:
+    name: Windows Build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: 'stable'
+
+      - name: Clone Repository
+        run: git clone --recurse-submodules -b SpotifyCanva https://${{secrets.SECRET_KEY}}@github.com/punisher-303/ECHOPULS.git
+
+      - name: Install Dependencies
+        run: cd ECHOPULS && flutter pub get
+
+      - name: Extract version from pubspec.yaml
+        shell: pwsh
+        run: |
+          $vLine = Select-String -Path ECHOPULS\pubspec.yaml -Pattern '^version:\s*(\S+)' | Select-Object -First 1
+          if (-not $vLine) { Write-Error 'version not found in pubspec.yaml'; exit 1 }
+          $ver = $vLine.Matches[0].Groups[1].Value.Split('+')[0]
+          "VERSION=$ver" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Set build number
+        shell: pwsh
+        run: |
+          $buildNumber = "${{ github.event.inputs.build_number }}"
+          if (-not $buildNumber) { $buildNumber = "2111" }
+          Write-Host "Setting BUILDVERSION to: $buildNumber"
+          "BUILDVERSION=$buildNumber" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Build Windows App
+        run: cd ECHOPULS && flutter build windows --release --build-number ${{ env.BUILDVERSION }} --no-tree-shake-icons
+
+      - name: Rename Windows binary
+        run: Rename-Item -Path "ECHOPULS/build/windows/x64/runner/Release/EchoPulse.exe" -NewName "echopulse.exe"
+
+      - name: ZIP Windows build
+        run: Compress-Archive -Path ECHOPULS/build/windows/x64/runner/Release/* -Destination ECHOPULS/build/windows/x64/echo_pulse_windows_x64.zip
+
+      - name: Upload Artifacts (Windows)
+        uses: actions/upload-artifact@v5
+        with:
+          name: echo_pulse_windows
+          path: ECHOPULS/build/windows/x64/echo_pulse_windows_x64.zip
+
+      - name: Create Release (Windows)
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: |
+            ECHOPULS/build/windows/x64/echo_pulse_windows_x64.zip
+          tag: v${{ env.VERSION }}+${{ env.BUILDVERSION }}
+          token: ${{secrets.SECRET_KEY}}
+          allowUpdates: true
+          omitBody: true
+          prerelease: true
