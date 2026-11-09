@@ -1,5 +1,5 @@
 {
-  "download_url": "https://punisher-303.github.io/Echo-Pulse/",
+  "download_url_fallback": "https://punisher-303.github.io/Echo-Pulse/",
   "download_url_windows": "https://github.com/punisher-303/Echo-Pulse/releases/latest/download/echo_pulse_windows_x64.zip",
   "download_url_android": "https://play.google.com/store/apps/details?id=com.echo.pulse",
   "download_url_mac": "https://github.com/punisher-303/Echo-Pulse/releases/latest",
