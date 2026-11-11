@@ -8,9 +8,11 @@
 Echo Pulse is experimental cross-platform open Source Music player designed to bring you Ad-free tunes from various sources. Dive into a world of limitless music from platforms like YouTube and Fuk Saavn, with more sources blooming soon! 🌼🎵
 
 
-![Echo Pulse ScrnShots](https://github.com/user-attachments/assets/15793b16-4a8f-4e8a-abe9-571ef50c962f)
+<img width="3840" height="2160" alt="Echo Pulse_ Romantic Music Experience (1)" src="https://github.com/user-attachments/assets/c1592ba9-652c-4dfa-8d38-0fe886d11c1d" />
 
-![Echo Pulse Desktop](https://github.com/user-attachments/assets/348a28e2-344e-4b03-b96b-778c9f009c0e)
+<img width="2392" height="1080" alt="Screenshot_20261109-063608" src="https://github.com/user-attachments/assets/68ab6b7a-c0a2-4e07-8d2d-401962ad168a" />
+
+
 
 ### **Why Echo Pulse?**
 
